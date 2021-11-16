@@ -9,18 +9,21 @@ public class Server {
 
     public Server(int port) {
         this.port = port;
-        start();
-    }         
-    public Server() {
-        this.port = 3000;
-        start();
-    }         
-    public void start() {
+        if (! start()) {
+            stop();
+        }
+    }    
+
+    public void stop() {
+        System.exit(-1);
+    }
+    
+    public boolean start() {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException err) {
             System.out.println("Could not listen on port: " + port);
-            System.exit(-1);
+            return false;
         }
         System.out.println("Listening on port: " + port);
         
@@ -28,9 +31,11 @@ public class Server {
             clientSocket = serverSocket.accept();
         } catch (IOException err) {
             System.out.println("Accept failed on port: " + port);
-            System.exit(-1);
+            return false;
         }
+        return true;
     }
+
     public static void main(String[] args) {
         new Server(4444);
     }
