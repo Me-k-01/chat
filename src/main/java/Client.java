@@ -16,7 +16,7 @@ public class Client {
     }
 
     public void start()  {
-        int servPort = 3000;
+        int servPort = 4444;
         String serverName = "yoshibox"; // TODO
 
         try{
@@ -24,17 +24,17 @@ public class Client {
             PrintWriter out = new PrintWriter(echoSocket.getOutputStream(),true) ;
             BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
         }
-        catch (UnknownHostException e){
-            System.out.println("Destiation unknown: " + serverName + ":" + port) ;
+        catch (UnknownHostException e) {
+            System.out.println("Destiation unknown: " + serverName + ":" + servPort) ;
             stop();
         }
-        catch (IOException e){
+        catch (IOException e) {
             System.out.println("Now to investigate this IO issue") ;
             stop();
         }
     }
 
     public static void main(String[] args) {
-        Client client = new Client(3000); 
+        Client client = new Client(4444); 
     }
 }

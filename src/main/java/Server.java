@@ -28,6 +28,7 @@ public class Server {
         
         try {
             clientSocket = serverSocket.accept();
+            System.out.println("Nouveau Client");
         } catch (IOException err) {
             System.out.println("Accept failed on port: " + port);
             stop();
