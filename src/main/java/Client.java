@@ -9,21 +9,29 @@ public class Client {
         this.port = port;
         start();
     }
+
+    public void stop() {
+        System.out.println("Stopping client");
+        System.exit(-1);
+    }
+
     public void start()  {
         int servPort = 3000;
+        String serverName = "address"; // TODO
+
         try{
-            Socket echoSocket = new Socket("address", servPort) ; // TODO
+            Socket echoSocket = new Socket(serverName, servPort) ; 
             PrintWriter out = new PrintWriter(echoSocket.getOutputStream(),true) ;
             BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
-            }
-            catch (UnknownHostException e){
-            System.out.println("Destiation unknown") ;
-            System.exit(-1) ;
-            }
-            catch (IOException e){
+        }
+        catch (UnknownHostException e){
+            System.out.println("Destiation unknown: " + serverName + ":" + port) ;
+            stop();
+        }
+        catch (IOException e){
             System.out.println("Now to investigate this IO issue") ;
-            System.exit(-1) ;
-            }
+            stop();
+        }
     }
 
     public static void main(String[] args) {
