@@ -17,7 +17,7 @@ public class Client {
 
     public void start()  {
         int servPort = 3000;
-        String serverName = "address"; // TODO
+        String serverName = "yoshibox"; // TODO
 
         try{
             Socket echoSocket = new Socket(serverName, servPort) ; 
