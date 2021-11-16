@@ -18,7 +18,7 @@ public class Client {
 
     public void start()  {
         int servPort = 4444;
-        String address = "";
+        String address = "192.168.22.75";
         try{
             //Socket echoSocket = new Socket(serverName, servPort) ; 
             Socket echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
