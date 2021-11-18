@@ -5,10 +5,30 @@ import java.net.UnknownHostException;
 
 public class Client {
     int port;
+    PrintWriter out = null;
+    BufferedReader in = null;
+    Socket echoSocket = null;
 
     public Client(int port) {
         this.port = port;
         start();
+        try {
+            listen();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }    
+    }
+    public void listen() throws IOException {
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        String userInput;
+        while ((userInput = stdIn.readLine() ) != null) {
+            out.println(userInput);
+            System.out.println("echo: " + in.readLine());
+        } 
+        out.close();
+        in.close();
+        stdIn.close();
+        echoSocket.close();
     }
 
     public void stop() {
@@ -21,9 +41,9 @@ public class Client {
         String address = "192.168.22.75";
         try{
             //Socket echoSocket = new Socket(serverName, servPort) ; 
-            Socket echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
-            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(),true) ;
-            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
+            echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
+            out = new PrintWriter(echoSocket.getOutputStream(),true) ;
+            in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
         }
         catch (UnknownHostException e) {
             System.out.println("Destiation unknown: " + address + ":" + servPort) ;

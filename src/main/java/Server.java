@@ -1,15 +1,23 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
     int port; 
     Socket clientSocket = null;
+    PrintWriter out = null;
+    BufferedReader in = null;
+    Socket echoSocket = null;
     ServerSocket serverSocket;
 
     public Server(int port) {
         this.port = port;
         start() ;
+        try {
+            listen();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }    
     }    
 
     public void stop() {
@@ -33,6 +41,18 @@ public class Server {
             System.out.println("Accept failed on port: " + port);
             stop();
         }
+    }
+    public void listen() throws IOException {
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        String userInput;
+        while ((userInput = stdIn.readLine() ) != null) {
+            out.println(userInput);
+            System.out.println("echo: " + in.readLine());
+        } 
+        out.close();
+        in.close();
+        stdIn.close();
+        echoSocket.close();
     }
 
     public static void main(String[] args) {
