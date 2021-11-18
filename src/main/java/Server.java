@@ -13,15 +13,16 @@ public class Server {
     public Server(int port) {
         this.port = port;
         start() ;
+        System.out.println("Connecté a un client");
         try {
-            listen();
+            communicate();
         } catch (IOException e) {
             e.printStackTrace();
         }    
     }    
 
     public void stop() {
-        System.out.println("Stopping server");
+        System.out.println("Arrêt du serveur");
         System.exit(-1);
     }
     
@@ -29,23 +30,22 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException err) {
-            System.out.println("Could not listen on port: " + port);
+            System.out.println("Port occupé: " + port);
             stop();
         }
-        System.out.println("Listening on port: " + port);
+        System.out.println("Écoute sur le port: " + port);
         
         try {
             clientSocket = serverSocket.accept();
-            System.out.println("Nouveau Client");
         } catch (IOException err) {
-            System.out.println("Accept failed on port: " + port);
+            System.out.println("N'a pas pu accepté de connection");
             stop();
         }
     }
-    public void listen() throws IOException {
+    public void communicate() throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
-        while ((userInput = stdIn.readLine() ) != null) {
+        while ((userInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
             out.println(userInput);
             System.out.println("echo: " + in.readLine());
         } 

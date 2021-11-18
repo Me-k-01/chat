@@ -12,16 +12,35 @@ public class Client {
     public Client(int port) {
         this.port = port;
         start();
+        System.out.println("Connecté au serveur");
         try {
-            listen();
+            communicate();
         } catch (IOException e) {
             e.printStackTrace();
         }    
     }
-    public void listen() throws IOException {
+
+    public void start()  {
+        int servPort = 4444;
+        String address = "192.168.22.75";
+        try{
+            echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
+            out = new PrintWriter(echoSocket.getOutputStream(),true) ;
+            in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
+        }
+        catch (UnknownHostException e) {
+            System.out.println("Destiation inconnu: " + address + ":" + servPort) ;
+            stop();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            stop();
+        }
+    }
+    public void communicate() throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
-        while ((userInput = stdIn.readLine() ) != null) {
+        while ((userInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
             out.println(userInput);
             System.out.println("echo: " + in.readLine());
         } 
@@ -32,27 +51,8 @@ public class Client {
     }
 
     public void stop() {
-        System.out.println("Stopping client");
+        System.out.println("Arrêt du client");
         System.exit(-1);
-    }
-
-    public void start()  {
-        int servPort = 4444;
-        String address = "192.168.22.75";
-        try{
-            //Socket echoSocket = new Socket(serverName, servPort) ; 
-            echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
-            out = new PrintWriter(echoSocket.getOutputStream(),true) ;
-            in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
-        }
-        catch (UnknownHostException e) {
-            System.out.println("Destiation unknown: " + address + ":" + servPort) ;
-            stop();
-        }
-        catch (IOException e) {
-            System.out.println("Now to investigate this IO issue") ;
-            stop();
-        }
     }
 
     public static void main(String[] args) {
