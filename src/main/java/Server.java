@@ -7,13 +7,12 @@ public class Server {
     Socket clientSocket = null;
     PrintWriter out = null;
     BufferedReader in = null;
-    Socket echoSocket = null;
     ServerSocket serverSocket;
 
     public Server(int port) {
         this.port = port;
         start() ;
-        System.out.println("Connecté a un client");
+        System.out.println("Connecté à un client");
         try {
             communicate();
         } catch (IOException e) {
@@ -37,8 +36,11 @@ public class Server {
         
         try {
             clientSocket = serverSocket.accept();
+            out = new PrintWriter(clientSocket.getOutputStream(),true) ;
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())) ;
         } catch (IOException err) {
             System.out.println("N'a pas pu accepté de connection");
+            err.printStackTrace();
             stop();
         }
     }
@@ -52,7 +54,7 @@ public class Server {
         out.close();
         in.close();
         stdIn.close();
-        echoSocket.close();
+        clientSocket.close();
     }
 
     public static void main(String[] args) {
