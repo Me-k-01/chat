@@ -14,13 +14,13 @@ public class Client {
         this.port = port;
         start();
         System.out.println("Connecté au serveur");
+        this.aes = new AES();
+        
         try {
             communicate();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        this.aes = new AES();
     }
 
     public void start()  {
