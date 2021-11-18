@@ -8,6 +8,7 @@ public class Server {
     PrintWriter out = null;
     BufferedReader in = null;
     ServerSocket serverSocket;
+    AES aes;
 
     public Server(int port) {
         this.port = port;
@@ -18,6 +19,8 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }    
+
+        this.aes = new AES();
     }    
 
     public void stop() {
@@ -48,8 +51,8 @@ public class Server {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
         while ((userInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
-            out.println(userInput);
-            System.out.println("echo: " + in.readLine());
+            out.println(aes.encryptText(userInput));
+            System.out.println("echo: " + aes.decryptText(in.readLine().getBytes()));
         } 
         out.close();
         in.close();
