@@ -5,8 +5,8 @@ import java.net.UnknownHostException;
 
 public class Client {
     int port;
-    PrintWriter out = null;
-    BufferedReader in = null;
+    DataOutputStream out = null;
+    DataInputStream in = null;
     Socket echoSocket = null;
     AES aes;
 
@@ -26,10 +26,11 @@ public class Client {
     public void start()  {
         int servPort = 4444;
         String address = "192.168.22.75";
+        //String address = "127.0.0.1";
         try{
             echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
-            out = new PrintWriter(echoSocket.getOutputStream(),true) ;
-            in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream())) ;
+            out = new DataOutputStream(echoSocket.getOutputStream());
+            in = new DataInputStream(echoSocket.getInputStream());
         }
         catch (UnknownHostException e) {
             System.out.println("Destiation inconnu: " + address + ":" + servPort) ;
@@ -44,8 +45,24 @@ public class Client {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
         while ((userInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
-            out.println(aes.encryptText(userInput));
-            System.out.println("echo: " + aes.decryptText(in.readLine().getBytes()));
+            byte[] encryptedText = aes.encryptText(userInput);
+
+            out.writeInt(encryptedText.length);
+            out.write(encryptedText);
+
+            if (in.available() > 0)
+            {
+                byte[] received = new byte[in.readInt()];
+                in.read(received);
+
+                System.out.print("- Message reçu :\nChiffré : ");
+                for (byte b: received)
+                {
+                    System.out.print(b + " ");
+                }
+                System.out.println("\nDéchiffré : " + aes.decryptText(received));
+                System.out.println("echo: " + aes.decryptText(received));
+            }
         } 
         out.close();
         in.close();

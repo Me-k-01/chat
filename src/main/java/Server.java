@@ -5,8 +5,8 @@ import java.net.Socket;
 public class Server {
     int port; 
     Socket clientSocket = null;
-    PrintWriter out = null;
-    BufferedReader in = null;
+    DataOutputStream out = null;
+    DataInputStream in = null;
     ServerSocket serverSocket;
     AES aes;
 
@@ -39,8 +39,8 @@ public class Server {
         
         try {
             clientSocket = serverSocket.accept();
-            out = new PrintWriter(clientSocket.getOutputStream(),true) ;
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())) ;
+            out = new DataOutputStream(clientSocket.getOutputStream());
+            in = new DataInputStream(clientSocket.getInputStream());
         } catch (IOException err) {
             System.out.println("N'a pas pu accepté de connection");
             err.printStackTrace();
@@ -51,8 +51,25 @@ public class Server {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
         while ((userInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
-            out.println(aes.encryptText(userInput));
-            System.out.println("echo: " + aes.decryptText(in.readLine().getBytes()));
+            byte[] encryptedText = aes.encryptText(userInput);
+
+            out.writeInt(encryptedText.length);
+            out.write(encryptedText);
+
+            if (in.available() > 0)
+            {
+                byte[] received = new byte[in.readInt()];
+                in.read(received);
+
+                System.out.print("- Message reçu :\nChiffré : ");
+                for (byte b: received)
+                {
+                    System.out.print(b + " ");
+                }
+                System.out.println("\nDéchiffré : " + aes.decryptText(received));
+                //System.out.println("echo: " + aes.decryptText(received));
+            }
+            
         } 
         out.close();
         in.close();
