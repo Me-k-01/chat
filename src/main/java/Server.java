@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server {
     int port; 
@@ -18,9 +19,11 @@ public class Server {
 
         try {
             communicate();
+        } catch (SocketException e) {
+            System.out.println("Arrêt de la connection");
         } catch (IOException e) {
             e.printStackTrace();
-        }    
+        }   
     }    
 
     public void stop() {
