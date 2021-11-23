@@ -62,9 +62,6 @@ public class Client {
                 }
                 String msg =  aes.decryptText(received);
                 System.out.println("\nDéchiffré : " + msg);
-                if (msg.equals("bye")) {
-                    break;
-                }
             }
             if (userInput.equals("bye")) {
                 break;
@@ -74,6 +71,7 @@ public class Client {
         in.close();
         stdIn.close();
         echoSocket.close();
+        stop();
     }
 
     public void stop() {
