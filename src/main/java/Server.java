@@ -71,6 +71,9 @@ public class Server {
                 }
                 String msg =  aes.decryptText(received);
                 System.out.println("\nDéchiffré : " + msg);
+                if (msg.equals("bye")) {
+                    break;
+                }
             }
             if (userInput.equals("bye")) {
                 break;
