@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 
 public class Client extends Server {
     int port;
-    public Socket echoSocket = null;
+    Socket echoSocket = null;
     AES aes;
 
     public Client(int port) {
@@ -16,7 +16,7 @@ public class Client extends Server {
     public void start()  {
         int servPort = 4444;
         String address = "192.168.22.75";
-        
+
         try{
             echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
@@ -33,6 +33,6 @@ public class Client extends Server {
     }
 
     public static void main(String[] args) {
-        Client client = new Client(4444); 
+        new Client(4444); 
     }
 }

@@ -8,7 +8,7 @@ public class Server {
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
-    public ServerSocket echoSocket;
+    ServerSocket echoSocket;
     AES aes;
 
     public Server(int port) {
