@@ -8,7 +8,7 @@ public class Server {
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
-    ServerSocket serverSocket;
+    public ServerSocket echoSocket;
     AES aes;
 
     public Server(int port) {
@@ -33,7 +33,7 @@ public class Server {
     
     public void start() {
         try {
-            serverSocket = new ServerSocket(port);
+            echoSocket = new ServerSocket(port);
         } catch (IOException err) {
             System.out.println("Port occupé: " + port);
             stop();
@@ -41,7 +41,7 @@ public class Server {
         System.out.println("Écoute sur le port: " + port);
         
         try {
-            clientSocket = serverSocket.accept();
+            clientSocket = echoSocket.accept();
             out = new DataOutputStream(clientSocket.getOutputStream());
             in = new DataInputStream(clientSocket.getInputStream());
         } catch (IOException err) {
@@ -52,9 +52,9 @@ public class Server {
     }
     public void communicate() throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        String userInput;
-        while ((userInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
-            byte[] encryptedText = aes.encryptText(userInput);
+        String usrInput;
+        while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
+            byte[] encryptedText = aes.encryptText(usrInput);
 
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
@@ -69,15 +69,11 @@ public class Server {
                 {
                     System.out.print(b + " ");
                 }
-                String msg =  aes.decryptText(received);
+                String msg = aes.decryptText(received);
                 System.out.println("\nDéchiffré : " + msg);
-                if (msg.equals("bye")) {
-                    break;
-                }
+                if (msg.equals("bye")) { break; }
             }
-            if (userInput.equals("bye")) {
-                break;
-            }
+            if (usrInput.equals("bye")) { break; }
         } 
         out.close();
         in.close();
