@@ -9,14 +9,14 @@ public class Server extends Thread {
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
-    ServerSocket echoSocket;
+    public ServerSocket echoSocket;
     AES aes;
 
     public Server(int port) {
         this.port = port;
-        startConnect() ;
+        aes = new AES();
+        startConnect();
         start(); // démarage du thread
-        this.aes = new AES();
 
         try {
             input();
@@ -45,6 +45,7 @@ public class Server extends Thread {
             err.printStackTrace();
             System.exit(-1);
         }
+        System.out.println("Client accepté");
     }
     @Override
     public void run() {
