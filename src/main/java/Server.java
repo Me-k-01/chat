@@ -13,6 +13,7 @@ public class Server extends Thread {
     AES aes;
 
     public Server(int port) {
+        super();    
         this.port = port;
         aes = new AES();
         startConnect();

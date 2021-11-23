@@ -19,7 +19,7 @@ public class Client extends Server {
             out = new DataOutputStream(echoSocket.getOutputStream());
             in = new DataInputStream(echoSocket.getInputStream());
         } catch (UnknownHostException e) {
-            System.out.println("Destiation inconnu: " + conAddress + ":" + conPort) ;
+            System.out.println("Destination inconnu: " + conAddress + ":" + conPort) ;
             System.exit(-1);
         } catch (IOException e) {
             e.printStackTrace();
