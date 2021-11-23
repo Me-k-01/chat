@@ -10,6 +10,7 @@ public class Server {
     DataInputStream in = null;
     ServerSocket echoSocket;
     AES aes;
+    ReadThread rt;
 
     public Server(int port) {
         this.port = port;
@@ -51,6 +52,9 @@ public class Server {
         }
     }
     public void communicate() throws IOException {
+        this.rt = new ReadThread(in, aes);
+        this.rt.start();
+
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String usrInput;
         while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
