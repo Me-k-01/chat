@@ -2,24 +2,24 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Arrays;
 
-public class Server {
+public class Server extends Thread {
     int port; 
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
     ServerSocket echoSocket;
     AES aes;
-    ReadThread rt;
 
     public Server(int port) {
         this.port = port;
-        start() ;
-        System.out.println("Connecté à un client");
+        startConnect() ;
+        start(); // démarage du thread
         this.aes = new AES();
 
         try {
-            communicate();
+            input();
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
@@ -27,19 +27,14 @@ public class Server {
         }   
     }    
 
-    public void stop() {
-        System.out.println("Arrêt du serveur");
-        System.exit(-1);
-    }
-    
-    public void start() {
+    public void startConnect() {
         try {
             echoSocket = new ServerSocket(port);
         } catch (IOException err) {
             System.out.println("Port occupé: " + port);
-            stop();
+            System.exit(-1);
         }
-        System.out.println("Écoute sur le port: " + port);
+        System.out.println("Le serveur écoute sur le port: " + port);
         
         try {
             clientSocket = echoSocket.accept();
@@ -48,42 +43,47 @@ public class Server {
         } catch (IOException err) {
             System.out.println("N'a pas pu accepté de connection");
             err.printStackTrace();
-            stop();
+            System.exit(-1);
         }
     }
-    public void communicate() throws IOException {
-        this.rt = new ReadThread(in, aes);
-        this.rt.start();
+    @Override
+    public void run() {
+        String msg = null;
+        while (msg.equals("bye")) {
+            try {
+                if (in.available() > 0) {
+                    byte[] received = new byte[in.readInt()];
+                    in.read(received);
 
+                    System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                    msg = this.aes.decryptText(received);
+                    System.out.println("\nDéchiffré : " + msg);
+                }
+            } catch (SocketException e) {
+                System.out.println("Fin de la communication");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void input() throws IOException {        
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        String usrInput;
-        while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
+        String usrInput = null;
+        while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye") ) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
-
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-
-            if (in.available() > 0)
-            {
-                byte[] received = new byte[in.readInt()];
-                in.read(received);
-
-                System.out.print("- Message reçu :\nChiffré : ");
-                for (byte b: received)
-                {
-                    System.out.print(b + " ");
-                }
-                String msg = aes.decryptText(received);
-                System.out.println("\nDéchiffré : " + msg);
-                if (msg.equals("bye")) { break; }
-            }
-            if (usrInput.equals("bye")) { break; }
         } 
         out.close();
         in.close();
         stdIn.close();
         clientSocket.close();
-        stop();
     }
 
     public static void main(String[] args) {

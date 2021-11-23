@@ -110,7 +110,7 @@ public class AES {
         }
     }
 
-    private static void generateAESKey()
+    public static void generateAESKey()
     {
         KeyGenerator kg;
         try {

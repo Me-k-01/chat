@@ -4,32 +4,26 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client extends Server {
-    int port;
+    int conPort = 4444;
+    String conAddress = "192.168.22.75";
     Socket echoSocket = null;
-    AES aes;
 
     public Client(int port) {
         super(port);
     }
 
     @Override
-    public void start()  {
-        int servPort = 4444;
-        String address = "192.168.22.75";
-
+    public void startConnect()  {
         try{
-            echoSocket = new Socket(InetAddress.getByName(address), servPort) ; 
+            echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
             in = new DataInputStream(echoSocket.getInputStream());
-        }
-        catch (UnknownHostException e) {
-            System.out.println("Destiation inconnu: " + address + ":" + servPort) ;
-            stop();
-        }
-        catch (IOException e) {
+        } catch (UnknownHostException e) {
+            System.out.println("Destiation inconnu: " + conAddress + ":" + conPort) ;
+        } catch (IOException e) {
             e.printStackTrace();
-            stop();
         }
+        System.out.println("Connecté au serveur");
     }
 
     public static void main(String[] args) {
