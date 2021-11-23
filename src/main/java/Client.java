@@ -4,8 +4,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client extends Server {
-    int conPort = 4444;
-    String conAddress = "192.168.22.75";
     public Socket echoSocket = null;
 
     public Client(int port) {
@@ -14,6 +12,8 @@ public class Client extends Server {
 
     @Override
     public void startConnect()  {
+        int conPort = 4444;
+        String conAddress = "192.168.22.75";
         try{
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());

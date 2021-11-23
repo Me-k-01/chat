@@ -50,7 +50,7 @@ public class Server extends Thread {
     }
     @Override
     public void run() {
-        String msg = null;
+        String msg = "";
         while (msg.equals("bye")) {
             try {
                 if (in.available() > 0) {
