@@ -66,10 +66,16 @@ public class Server {
                 {
                     System.out.print(b + " ");
                 }
-                System.out.println("\nDéchiffré : " + aes.decryptText(received));
+                String msg =  aes.decryptText(received);
+                System.out.println("\nDéchiffré : " + msg);
                 //System.out.println("echo: " + aes.decryptText(received));
+                if (msg == "bye") {
+                    break;
+                }
             }
-            
+            if (userInput == "bye") {
+                break;
+            }
         } 
         out.close();
         in.close();

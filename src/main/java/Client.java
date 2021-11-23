@@ -60,8 +60,14 @@ public class Client {
                 {
                     System.out.print(b + " ");
                 }
-                System.out.println("\nDéchiffré : " + aes.decryptText(received));
-                System.out.println("echo: " + aes.decryptText(received));
+                String msg =  aes.decryptText(received);
+                System.out.println("\nDéchiffré : " + msg);
+                if (msg == "bye") {
+                    break;
+                }
+            }
+            if (userInput == "bye") {
+                break;
             }
         } 
         out.close();
