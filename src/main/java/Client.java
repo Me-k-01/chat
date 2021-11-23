@@ -62,11 +62,11 @@ public class Client {
                 }
                 String msg =  aes.decryptText(received);
                 System.out.println("\nDéchiffré : " + msg);
-                if (msg == "bye") {
+                if (msg.equals("bye")) {
                     break;
                 }
             }
-            if (userInput == "bye") {
+            if (userInput.equals("bye")) {
                 break;
             }
         } 

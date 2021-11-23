@@ -69,11 +69,11 @@ public class Server {
                 String msg =  aes.decryptText(received);
                 System.out.println("\nDéchiffré : " + msg);
                 //System.out.println("echo: " + aes.decryptText(received));
-                if (msg == "bye") {
+                if (msg.equals("bye")) {
                     break;
                 }
             }
-            if (userInput == "bye") {
+            if (userInput.equals("bye")) {
                 break;
             }
         } 
