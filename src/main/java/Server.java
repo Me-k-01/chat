@@ -49,7 +49,7 @@ public class Server extends Thread {
         System.out.println("Client accepté");
     }
     @Override
-    public void run() {
+    public void run() { // Reception
         String msg = "";
         while (! msg.equals("bye") ) {
             try {
@@ -75,15 +75,16 @@ public class Server extends Thread {
         }
         try {
             stdIn.close();
+            System.exit(-1);
         } catch (IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
-    public void communicate() throws IOException {     
+    public void communicate() throws IOException {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
         String usrInput = null;
         start(); // démarage du thread pour la reception    
-
+        ////////// Envoie //////////
         while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
