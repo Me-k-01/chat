@@ -50,7 +50,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         String msg = "";
-        while (msg.equals("bye")) {
+        while (! msg.equals("bye")) {
             try {
                 if (in.available() > 0) {
                     byte[] received = new byte[in.readInt()];
@@ -77,7 +77,7 @@ public class Server extends Thread {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String usrInput = null;
         start(); // démarage du thread pour la reception    
-        
+
         while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye") ) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);

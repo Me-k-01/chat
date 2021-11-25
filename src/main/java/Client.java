@@ -13,7 +13,7 @@ public class Client extends Server {
     @Override
     public void startConnect()  {
         int conPort = 4444;
-        String conAddress = "192.168.22.75";
+        String conAddress = "192.168.58.75";
         try{
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
