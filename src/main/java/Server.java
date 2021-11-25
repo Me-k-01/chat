@@ -51,7 +51,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         String msg = "";
-        while (! msg.equals("bye")) {
+        while (! msg.equals("bye") ) {
             try {
                 if (in.available() > 0) {
                     byte[] received = new byte[in.readInt()];
@@ -70,13 +70,13 @@ public class Server extends Thread {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                break; // On arrette d'ecouter
+            } 
         }
         try {
             stdIn.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
     public void communicate() throws IOException {     
