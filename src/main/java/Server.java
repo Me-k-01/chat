@@ -88,6 +88,7 @@ public class Server extends Thread {
         in.close();
         stdIn.close();
         clientSocket.close();
+        System.exit(-1);
     }
 
     public static void main(String[] args) {
