@@ -83,6 +83,7 @@ public class Server extends Thread {
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
         } 
+        this.interrupt();
         out.close();
         in.close();
         stdIn.close();
