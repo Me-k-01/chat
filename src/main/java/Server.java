@@ -9,7 +9,7 @@ public class Server extends Thread {
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
-    public boolean isStopped = false;
+    BufferedReader stdIn;
     public ServerSocket echoSocket;
     AES aes;
 
@@ -51,7 +51,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         String msg = "";
-        while (! msg.equals("bye") || ! this.isStopped) {
+        while (! msg.equals("bye")) {
             try {
                 if (in.available() > 0) {
                     byte[] received = new byte[in.readInt()];
@@ -73,22 +73,27 @@ public class Server extends Thread {
                 e.printStackTrace();
             }
         }
-        this.isStopped = true;
+        try {
+            stdIn.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     public void communicate() throws IOException {     
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        stdIn = new BufferedReader(new InputStreamReader(System.in));
         String usrInput = null;
         start(); // démarage du thread pour la reception    
 
-        while ((usrInput = stdIn.readLine() ) != null || !this.isStopped) { // Tant que l'on a des input
+        while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-            if (usrInput.equals("bye")) { break; }
+            if (! usrInput.equals("bye")) { break; }
         } 
-        this.isStopped = true;
         out.close();
         in.close();
+        this.interrupt();
     }
 
     public static void main(String[] args) {
