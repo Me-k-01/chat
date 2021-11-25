@@ -78,6 +78,7 @@ public class Server extends Thread {
             System.exit(-1);
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
     public void communicate() throws IOException {
