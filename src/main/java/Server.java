@@ -76,7 +76,6 @@ public class Server extends Thread {
         try {
             stdIn.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -89,7 +88,7 @@ public class Server extends Thread {
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-            if (! usrInput.equals("bye")) { break; }
+            if (usrInput.equals("bye")) { break; }
         } 
         out.close();
         in.close();
