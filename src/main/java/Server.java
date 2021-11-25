@@ -79,10 +79,11 @@ public class Server extends Thread {
         String usrInput = null;
         start(); // démarage du thread pour la reception    
 
-        while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye") ) { // Tant que l'on a des input
+        while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
+            if (! usrInput.equals("bye")) { break; }
         } 
         this.isStopped = true;
         out.close();
