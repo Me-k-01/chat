@@ -73,13 +73,7 @@ public class Server extends Thread {
                 break; // On arrette d'ecouter
             } 
         }
-        try {
-            stdIn.close();
-            System.exit(-1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        System.exit(0);
     }
     public void communicate() throws IOException {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
