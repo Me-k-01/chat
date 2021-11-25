@@ -9,6 +9,7 @@ public class Server extends Thread {
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
+    public boolean isStopped = false;
     public ServerSocket echoSocket;
     AES aes;
 
@@ -50,7 +51,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         String msg = "";
-        while (! msg.equals("bye")) {
+        while (! msg.equals("bye") && ! this.isStopped) {
             try {
                 if (in.available() > 0) {
                     byte[] received = new byte[in.readInt()];
@@ -83,12 +84,9 @@ public class Server extends Thread {
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
         } 
-        this.interrupt();
+        this.isStopped = true;
         out.close();
         in.close();
-        stdIn.close();
-        clientSocket.close();
-        System.exit(-1);
     }
 
     public static void main(String[] args) {
