@@ -83,7 +83,7 @@ public class Server extends Thread {
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-            if (! usrInput.equals("bye")) { break; }
+            if (usrInput.equals("bye")) { break; }
         } 
         this.isStopped = true;
         out.close();
