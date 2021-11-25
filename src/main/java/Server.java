@@ -17,10 +17,9 @@ public class Server extends Thread {
         this.port = port;
         aes = new AES();
         startConnect();
-        start(); // démarage du thread
 
         try {
-            input();
+            communicate();
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
@@ -74,9 +73,11 @@ public class Server extends Thread {
             }
         }
     }
-    public void input() throws IOException {        
+    public void communicate() throws IOException {     
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String usrInput = null;
+        start(); // démarage du thread pour la reception    
+        
         while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye") ) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
