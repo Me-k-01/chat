@@ -19,6 +19,8 @@ public class Server {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
         startConnect();
 
+        
+      
         read();
     }    
 
