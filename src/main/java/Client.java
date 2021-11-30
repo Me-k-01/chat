@@ -7,21 +7,19 @@ public class Client extends Server {
     public Client(int port) {
         super(port);
     }
-
+    
     @Override
     public void connect()  {
-        String conAddress = "192.168.4.75";
-        int conPort = 4444;
+        String conAddress = "127.0.0.1"; int conPort = 4444;
 
         Properties prop = new Properties();
-        String fileName = "config.conf";
-        try (FileInputStream fis = new FileInputStream(fileName)) {
+        try (FileInputStream fis = new FileInputStream("config.conf")) {
             prop.load(fis);
+            conAddress = prop.getProperty("SERVER_ADDRESS");
+            conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim());
         } catch (IOException err) {
-            err.printStackTrace();
+            System.out.println("Fichier config non trouvé.");
         }
-        conAddress = (String)prop.get("SERVER_ADDRESS");
-        conPort = (Integer)prop.get("SERVER_PORT");
 
         try{
             Socket echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
