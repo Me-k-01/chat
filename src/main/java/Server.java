@@ -10,7 +10,7 @@ public class Server {
     DataOutputStream out = null;
     DataInputStream in = null;
     BufferedReader stdIn;
-    public ServerSocket echoSocket;
+    ServerSocket echoSocket;
     AES aes;
 
     public Server(int port) {
@@ -20,13 +20,6 @@ public class Server {
         startConnect();
 
         read();
-        /*try {
-            communicate();
-        } catch (SocketException e) {
-            System.out.println("Arrêt de la connection");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }   */
     }    
 
     public void startConnect() {

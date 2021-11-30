@@ -35,7 +35,6 @@ public class Client {
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-            if (usrInput.equals("bye")) { break; }
 
             if (in.available() > 0) {
                 byte[] received = new byte[in.readInt()];
@@ -45,6 +44,7 @@ public class Client {
                 String msg = this.aes.decryptText(received);
                 System.out.println("\nDéchiffré : " + msg);
             }
+            if (usrInput.equals("bye")) { break; }
         } 
         out.close();
         in.close();
@@ -52,8 +52,8 @@ public class Client {
 
     public void startConnect()  {
         int conPort = 4444;
-        String conAddress = "192.168.58.75";
-        
+        String conAddress = "192.168.4.75";
+        System.out.println("trying to connect");
         try{
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
