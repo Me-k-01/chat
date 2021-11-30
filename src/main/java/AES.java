@@ -30,7 +30,6 @@ public class AES {
             System.out.println("Algorithm doesn't exist for Cipher");
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
-            System.out.println("???????");
             e.printStackTrace();
         }
     }
