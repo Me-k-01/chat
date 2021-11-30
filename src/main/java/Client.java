@@ -23,20 +23,27 @@ public class Client {
 
         listenThread = new Thread() {
             public void run() {
-                try {
-                    if (in.available() > 0) {
-                        byte[] received = new byte[in.readInt()];
-                        in.read(received);
-   
-                        System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                        String msg = aes.decryptText(received);
-                        System.out.println("\nDéchiffré : " + msg);
+                while ( true ) {
+                    try {
+                        if (in.available() > 0) {
+                            byte[] received = new byte[in.readInt()];
+                            in.read(received);
+
+                            System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                            String msg = aes.decryptText(received);
+                            System.out.println("\nDéchiffré : " + msg);
+                        }
+                    } catch (SocketException e) {
+                        System.out.println("Fin de la communication");
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                    try { Thread.sleep(50); } 
+                    catch (InterruptedException e) { return; } // On arrette d'attendre quand on est interrompu  
                 }
             }
-          };
+        };
         listenThread.start();
 
         try {
@@ -50,12 +57,10 @@ public class Client {
     public void write() throws IOException {
         String usrInput = null;
         ////////// Envoie //////////
-        while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
+        while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye")) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-
-            if (usrInput.equals("bye")) { break; }
         } 
         out.close();
         in.close();
