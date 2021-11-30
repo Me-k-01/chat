@@ -1,19 +1,15 @@
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.Arrays;
 
 public class Server {
     int port; 
-    Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
     BufferedReader stdIn;
-    public ServerSocket echoSocket;
     AES aes;
     Thread listenThread;
-
+    
     public Server(int port) {
         super();    
         this.port = port;
@@ -22,24 +18,25 @@ public class Server {
         connect();
 
         listenThread = new Thread() {
-            public void run() { // Reception
+            public void run() { // Réception
                 String msg = "";
                 while (! msg.equals("bye")) {
+                    byte[] received = null;
                     try {
-                        if (in.available() > 0) {
-                            byte[] received = new byte[in.readInt()];
-                            in.read(received);
-        
-                            System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                            msg = aes.decryptText(received);
-                            System.out.println("\nDéchiffré : " + msg);
-                        }
-                    } catch (SocketException e) {
-                        System.out.println("Fin de la communication");
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                         // on passe si aucun message n'a été envoyé depuis 
+                        if (in.available() <= 0) { continue; }
+                        received = new byte[in.readInt()];
+                        in.read(received);
+                    } catch (SocketException e) { 
+                        System.out.println("Fin de la communication"); 
+                    } catch (IOException e) { 
+                        e.printStackTrace();  
                     }
-        
+
+                    System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                    msg = aes.decryptText(received);
+                    System.out.println("\nDéchiffré : " + msg);
+
                     try { Thread.sleep(50); } 
                     catch (InterruptedException e) { return; } // On arrette d'écouter lorsque l'on est interrompu
                 }
@@ -49,7 +46,7 @@ public class Server {
         listenThread.start(); // démarage du thread pour la reception    
 
         try {
-            communicate();
+            write();
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
@@ -58,8 +55,9 @@ public class Server {
     }    
 
     public void connect() {
+        ServerSocket serverSocket = null;
         try {
-            echoSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port);
         } catch (IOException err) {
             System.out.println("Port occupé: " + port);
             System.exit(-1);
@@ -67,9 +65,9 @@ public class Server {
         System.out.println("Le serveur écoute sur le port: " + port);
         
         try {
-            clientSocket = echoSocket.accept();
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            in = new DataInputStream(clientSocket.getInputStream());
+            Socket echoSocket = serverSocket.accept();
+            out = new DataOutputStream(echoSocket.getOutputStream());
+            in = new DataInputStream(echoSocket.getInputStream());
         } catch (IOException err) {
             System.out.println("N'a pas pu accepté de connection");
             err.printStackTrace();
@@ -77,7 +75,7 @@ public class Server {
         }
         System.out.println("Client accepté");
     }
-    public void communicate() throws IOException {
+    public void write() throws IOException {
         String usrInput = null;
         ////////// Envoie //////////
         while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input

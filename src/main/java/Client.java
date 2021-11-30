@@ -1,10 +1,7 @@
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class Client extends Server {
-    public Socket echoSocket = null;
 
     public Client(int port) {
         super(port);
@@ -15,7 +12,7 @@ public class Client extends Server {
         String conAddress = "192.168.58.75";
         int conPort = 4444;
         try{
-            echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
+            Socket echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
             in = new DataInputStream(echoSocket.getInputStream());
         } catch (UnknownHostException e) {

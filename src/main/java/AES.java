@@ -1,19 +1,9 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 public class AES {
     private SecretKey AESKey;
@@ -85,16 +75,14 @@ public class AES {
             int newByte;
 
             ArrayList<Integer> byteList = new ArrayList<Integer>();
-            while ((newByte = file.read()) != -1)
-            {
+            while ((newByte = file.read()) != -1) {
                 nbrByte++;
                 byteList.add(newByte);
             }
 
             byte[] aeskeyByte = new byte[nbrByte];
 
-            for (int i = 0; i < nbrByte; i++)
-            {
+            for (int i = 0; i < nbrByte; i++) {
                 aeskeyByte[i] = byteList.get(i).byteValue();
             }
 
@@ -133,8 +121,7 @@ public class AES {
         }
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         //generateAESKey();
 
         // Un message "Test" doit
