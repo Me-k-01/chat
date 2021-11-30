@@ -19,8 +19,6 @@ public class Server {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
         startConnect();
 
-        
-      
         read();
     }    
 
@@ -45,7 +43,7 @@ public class Server {
         System.out.println("Client accepté");
     }
 
-    public void read() { // Todo reimplementer le threading
+    public void read() {
         String msg = "";
         while ( true ) {
             try {
@@ -69,7 +67,6 @@ public class Server {
                 break; // On arrette d'ecouter
             } 
         }
-        System.exit(0);
     }
 
     public static void main(String[] args) {
