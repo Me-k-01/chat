@@ -11,9 +11,9 @@ public class Client extends Server {
     }
 
     @Override
-    public void startConnect()  {
-        int conPort = 4444;
+    public void connect()  {
         String conAddress = "192.168.58.75";
+        int conPort = 4444;
         try{
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
