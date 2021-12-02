@@ -28,7 +28,9 @@ public class Server {
                 }
             }
         };
+        readThread.start();
         listenConnection();
+        readThread.interrupt();
     }    
 
     public void listenConnection() {
