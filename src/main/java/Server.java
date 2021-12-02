@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Arrays;
+import java.util.*;
 
 public class Server {
     int port; 
@@ -10,12 +10,13 @@ public class Server {
     DataOutputStream out = null;
     DataInputStream in = null;
     BufferedReader stdIn;
-    ServerSocket echoSocket;
     AES aes;
+    List<Socket> echoSockets; 
 
     public Server(int port) {
         this.port = port;
         aes = new AES();
+        echoSockets = new ArrayList<Socket>(); 
         stdIn = new BufferedReader(new InputStreamReader(System.in));
         startConnect();
 
