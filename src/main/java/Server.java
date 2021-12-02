@@ -9,15 +9,26 @@ public class Server {
     BufferedReader stdIn;
     AES aes;
     Set<Connexion> connexions;
-
-    Thread listenThread;
+    Thread readThread;
 
     public Server(int port) {
         this.port = port;
         aes = new AES();
         connexions = new HashSet<Connexion>();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        read();
+        readThread = new Thread() {
+            public void run() {
+                while ( true ) {
+                    read();
+        
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        break; // On arrette d'ecouter
+                    } 
+                }
+            }
+        };
         listenConnection();
     }    
 
@@ -36,28 +47,26 @@ public class Server {
 
     public void read() {
         String msg = "";
-        while ( true ) {
+        for (Connexion connexion : connexions) {
             try {
-                if (in.available() > 0) {
-                    byte[] received = new byte[in.readInt()];
-                    in.read(received);
+                if (connexion.in.available() <= 0) { continue; }
 
-                    System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                    msg = this.aes.decryptText(received);
-                    System.out.println("\nDéchiffré : " + msg);
-                }
+                byte[] received = new byte[connexion.in.readInt()];
+                connexion.in.read(received);
+
+                System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                msg = this.aes.decryptText(received);
+                System.out.println("\nDéchiffré : " + msg);
             } catch (SocketException e) {
                 System.out.println("Fin de la communication");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                break; // On arrette d'ecouter
-            } 
         }
+    }
+
+    public void broadcast() {
+
     }
 
     public static void main(String[] args) {
