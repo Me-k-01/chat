@@ -18,7 +18,7 @@ public class Connexion {
         }
     }
 
-    public byte[] lireSocket()
+    public byte[] lireSocket()  throws SocketDisconnected
     {
         byte[] msg = null;
 
@@ -35,7 +35,7 @@ public class Connexion {
         return msg;
     }
 
-    public void ecrireSocket(byte[] msg)
+    public void ecrireSocket(byte[] msg) throws SocketDisconnected
     {
         try {
             out.writeInt(msg.length);
