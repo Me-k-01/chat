@@ -19,8 +19,8 @@ public class Server {
         readThread = new Thread() {
             public void run() {
                 while ( true ) {
-                    read();
-                    
+                    List<byte[]> msgToBroadcast = readAll();
+                    broadcast(msgToBroadcast);
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
@@ -57,31 +57,35 @@ public class Server {
         // server.close(); // Dé-commenter quand on aura la logique de fermeture du serveur
     }
 
-    public void read() {
-        String msg = "";
+    public List<byte[]> readAll() {
+        List<byte[]> messages = new ArrayList<byte[]>();
+
         for (Connexion connexion : connexions) {
             try {
                 if (connexion.in.available() <= 0) { continue; }
 
-                byte[] received = new byte[connexion.in.readInt()];
-                connexion.in.read(received);
-
-                System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                //msg = this.aes.decryptText(received);
-                //System.out.println("\nDéchiffré : " + msg);
+                byte[] received = connexion.read(); // TODO
+                if (received.length != 0) {
+                    messages.add(received);
+                    System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                } 
             } catch (SocketException e) {
                 System.out.println("Fin de la communication");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return messages;
     }
 
-    public void broadcast(byte[] msg) {
+    public void broadcast(List<byte[]> msgToBroadcast) {
 
-        for (Connexion connexion : connexions) {
-            connexion.out.writeInt(msg.length);
-            connexion.out.write(msg);
+        for (byte[] msg : msgToBroadcast) {
+            for (Connexion connexion : connexions) {
+                connexion.send(msg); // TODO
+                //connexion.out.writeInt(msg.length);
+                //connexion.out.write(msg);
+            }
         }
     }
 
