@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Properties;
 
 public class Client {
     public Socket echoSocket = null;
@@ -14,12 +15,23 @@ public class Client {
     BufferedReader stdIn;
     AES aes;
     Thread listenThread;
+    String conAddress;
+    int conPort;
 
     public Client(int port) {
         this.port = port;
         aes = new AES();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        connect("192.168.4.75", 4444);
+
+        Properties prop = new Properties();
+        try (FileInputStream fis = new FileInputStream("config.conf")) {
+            prop.load(fis);
+            conAddress = prop.getProperty("SERVER_ADDRESS");
+            conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim());
+        } catch (IOException err) {
+            System.out.println("Fichier config non trouvé.");
+        }
+        connect();
 
         listenThread = new Thread() {
             public void run() {
@@ -67,7 +79,7 @@ public class Client {
         listenThread.interrupt();
     }
 
-    public void connect(String conAddress, int conPort)  {
+    public void connect()  {
         try {
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
             out = new DataOutputStream(echoSocket.getOutputStream());
