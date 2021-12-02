@@ -33,16 +33,28 @@ public class Server {
     }    
 
     public void listenConnection() {
+        ServerSocket server = null;
         try {
-            echoSocket = new ServerSocket(port);
-        } catch (IOException err) {
-            System.out.println("Port occupé: " + port);
-            System.exit(-1);
+            server = new ServerSocket(port);
+        } catch (IOException e) {
+            System.out.println("Le socket du serveur n'a pas pu être ouvert :");
+            e.printStackTrace();
         }
-        System.out.println("Le serveur écoute sur le port: " + port);
-        
-        clientSocket = echoSocket.accept();
-        System.out.println("Client accepté");
+        while (true)
+        {
+            Socket newClient = null;
+            try {
+                newClient = server.accept();
+            } catch (IOException e) {
+                System.out.println("Le serveur n'arrive pas à accepter de nouvelles connexions");
+                e.printStackTrace();
+            }
+            connexions.add(new Connexion(newClient));
+
+            System.out.println("Nouveau client accepté");
+        }
+
+        // server.close(); // Dé-commenter quand on aura la logique de fermeture du serveur
     }
 
     public void read() {
