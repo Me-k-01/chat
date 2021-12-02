@@ -53,7 +53,6 @@ public class Server {
 
             System.out.println("Nouveau client accepté");
         }
-
         // server.close(); // Dé-commenter quand on aura la logique de fermeture du serveur
     }
 
@@ -62,29 +61,24 @@ public class Server {
 
         for (Connexion connexion : connexions) {
             try {
-                if (connexion.in.available() <= 0) { continue; }
 
-                byte[] received = connexion.read(); // TODO
-                if (received.length != 0) {
+                byte[] received = connexion.read(); 
+                if (received != null) {
                     messages.add(received);
                     System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                 } 
-            } catch (SocketException e) {
-                System.out.println("Fin de la communication");
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (SocketDisconnected err) {
+                System.out.println("Deconnexion d'un client!");
+                connexions.remove(connexion);
             }
         }
         return messages;
     }
 
     public void broadcast(List<byte[]> msgToBroadcast) {
-
         for (byte[] msg : msgToBroadcast) {
             for (Connexion connexion : connexions) {
-                connexion.send(msg); // TODO
-                //connexion.out.writeInt(msg.length);
-                //connexion.out.write(msg);
+                connexion.send(msg);
             }
         }
     }

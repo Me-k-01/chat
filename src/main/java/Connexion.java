@@ -18,7 +18,7 @@ public class Connexion {
         }
     }
 
-    public byte[] lireSocket()
+    public byte[] read()
     {
         byte[] msg = null;
 
@@ -35,7 +35,7 @@ public class Connexion {
         return msg;
     }
 
-    public void ecrireSocket(byte[] msg)
+    public void send(byte[] msg)
     {
         try {
             out.writeInt(msg.length);
