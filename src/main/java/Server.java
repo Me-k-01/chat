@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.*;
 
 public class Server {
@@ -40,8 +39,7 @@ public class Server {
             System.out.println("Le socket du serveur n'a pas pu être ouvert :");
             e.printStackTrace();
         }
-        while (true)
-        {
+        while (true) {
             Socket newClient = null;
             try {
                 newClient = server.accept();
@@ -50,7 +48,6 @@ public class Server {
                 e.printStackTrace();
             }
             connexions.add(new Connexion(newClient));
-
             System.out.println("Nouveau client accepté");
         }
         // server.close(); // Dé-commenter quand on aura la logique de fermeture du serveur
@@ -61,7 +58,6 @@ public class Server {
 
         for (Connexion connexion : connexions) {
             try {
-
                 byte[] received = connexion.read(); 
                 if (received != null) {
                     messages.add(received);
@@ -78,7 +74,12 @@ public class Server {
     public void broadcast(List<byte[]> msgToBroadcast) {
         for (byte[] msg : msgToBroadcast) {
             for (Connexion connexion : connexions) {
-                connexion.send(msg);
+                try {
+                    connexion.send(msg);
+                } catch (SocketDisconnected err) {
+                    System.out.println("Deconnexion d'un client!");
+                    connexions.remove(connexion);
+                }
             }
         }
     }
