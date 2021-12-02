@@ -20,7 +20,7 @@ public class Server {
             public void run() {
                 while ( true ) {
                     read();
-        
+                    
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
@@ -55,8 +55,8 @@ public class Server {
                 connexion.in.read(received);
 
                 System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                msg = this.aes.decryptText(received);
-                System.out.println("\nDéchiffré : " + msg);
+                //msg = this.aes.decryptText(received);
+                //System.out.println("\nDéchiffré : " + msg);
             } catch (SocketException e) {
                 System.out.println("Fin de la communication");
             } catch (IOException e) {
@@ -65,8 +65,12 @@ public class Server {
         }
     }
 
-    public void broadcast() {
+    public void broadcast(byte[] msg) {
 
+        for (Connexion connexion : connexions) {
+            connexion.out.writeInt(msg.length);
+            connexion.out.write(msg);
+        }
     }
 
     public static void main(String[] args) {
