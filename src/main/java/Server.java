@@ -6,24 +6,22 @@ import java.util.*;
 
 public class Server {
     int port; 
-    Socket clientSocket = null;
-    DataOutputStream out = null;
-    DataInputStream in = null;
     BufferedReader stdIn;
     AES aes;
-    List<Socket> echoSockets; 
+    Set<Connexion> connexions;
+
+    Thread listenThread;
 
     public Server(int port) {
         this.port = port;
         aes = new AES();
-        echoSockets = new ArrayList<Socket>(); 
+        connexions = new HashSet<Connexion>();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        startConnect();
-
         read();
+        listenConnection();
     }    
 
-    public void startConnect() {
+    public void listenConnection() {
         try {
             echoSocket = new ServerSocket(port);
         } catch (IOException err) {
@@ -32,15 +30,7 @@ public class Server {
         }
         System.out.println("Le serveur écoute sur le port: " + port);
         
-        try {
-            clientSocket = echoSocket.accept();
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            in = new DataInputStream(clientSocket.getInputStream());
-        } catch (IOException err) {
-            System.out.println("N'a pas pu accepté de connection");
-            err.printStackTrace();
-            System.exit(-1);
-        }
+        clientSocket = echoSocket.accept();
         System.out.println("Client accepté");
     }
 
