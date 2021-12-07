@@ -4,10 +4,10 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    int port; 
-    AES aes;
     Set<Connexion> connexions;
     Thread readThread;
+    int port; 
+    AES aes;
 
     public Server() {
         ////////// Config //////////

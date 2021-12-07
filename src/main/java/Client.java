@@ -8,15 +8,16 @@ import java.util.Properties;
 
 public class Client {
     public Socket echoSocket = null;
-    int port; 
     Socket clientSocket = null;
     DataOutputStream out = null;
     DataInputStream in = null;
     BufferedReader stdIn;
-    AES aes;
     Thread listenThread;
+
     String conAddress;
     int conPort;
+    int port; 
+    AES aes;
 
     public Client() {
         aes = new AES(); // Crypteur AES
@@ -66,14 +67,15 @@ public class Client {
         listenThread.start();
 
         try {
-            write();
+            write(); // Les écritures de l'utilisateur
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
             e.printStackTrace();
         }   
     }
-    public void write() throws IOException { // Crypter ce que l'utilisateur écrit et l'envoyer au serveur  
+    // Crypter ce que l'utilisateur écrit et l'envoyer au serveur
+    public void write() throws IOException {  
         String usrInput = null;
         ////////// Envoie des entrées utilisateur //////////
         // Tant que l'on a des entrées de l'utilisateur
@@ -90,7 +92,8 @@ public class Client {
         listenThread.interrupt();
     }
 
-    public void connect()  { // Se connecter au serveur
+     // Se connecter au serveur
+    public void connect()  {
         try {
             ////////// Connection //////////
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
