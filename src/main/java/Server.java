@@ -70,6 +70,7 @@ public class Server {
                 System.out.println("Deconnexion d'un client!");
                 connexions.remove(connexion);
                 System.out.println(connexions.size());
+                connexion.close();
             }
         }
         return messages;
@@ -83,6 +84,7 @@ public class Server {
                 } catch (SocketDisconnected err) {
                     System.out.println("Deconnexion d'un client!");
                     connexions.remove(connexion);
+                    connexion.close();
                 }
             }
         }
