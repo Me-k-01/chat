@@ -22,7 +22,6 @@ public class Client {
     public Client() {
         aes = new AES(); // Crypteur AES
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
-
         ////////// Config //////////
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream("config.conf")) {
@@ -65,7 +64,6 @@ public class Client {
             }
         };
         listenThread.start();
-
         try {
             write(); // Les écritures de l'utilisateur
         } catch (SocketException e) {

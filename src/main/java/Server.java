@@ -10,6 +10,8 @@ public class Server {
     AES aes;
 
     public Server() {
+        aes = new AES(); // Crypteur AES
+        connexions = new HashSet<Connexion>(); 
         ////////// Config //////////
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream("config.conf")) {
@@ -18,8 +20,6 @@ public class Server {
         } catch (IOException err) {
             throw new RuntimeException("Fichier config.conf non trouvé.");
         }
-        aes = new AES(); // Crypteur AES
-        connexions = new HashSet<Connexion>(); 
 
          // Thread pour lire ce que les clients envoient au serveur
         readThread = new Thread() {
