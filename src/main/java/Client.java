@@ -25,7 +25,7 @@ public class Client {
         ////////// Config //////////
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream("config.conf")) {
-            prop.load(fis); // On charge du fichier config
+            prop.load(fis); // On charge le fichier config
             conAddress = prop.getProperty("SERVER_ADDRESS").trim(); // Récupérer l'adresse 
             conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim()); // Récupérer le port du serveur
             port = Integer.parseInt(prop.getProperty("CLIENT_PORT").trim()); // Récupérer le port du client
@@ -73,7 +73,7 @@ public class Client {
             e.printStackTrace();
         }   
     }
-    public void write() throws IOException {
+    public void write() throws IOException { // Crypter ce que l'utilisateur écrit et l'envoyer au serveur  
         String usrInput = null;
         ////////// Envoie des entrées utilisateur //////////
         // Tant que l'on a des entrées de l'utilisateur
@@ -90,11 +90,11 @@ public class Client {
         listenThread.interrupt();
     }
 
-    public void connect()  {
+    public void connect()  { // Se connecter au serveur
         try {
-            ////////// Connection au serveur //////////
+            ////////// Connection //////////
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
-            ////////// I / O //////////
+            ////////// Flux I / O //////////
             in  = new DataInputStream( echoSocket.getInputStream());
             out = new DataOutputStream(echoSocket.getOutputStream());
         } catch (UnknownHostException e) {
