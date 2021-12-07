@@ -68,9 +68,8 @@ public class Server {
                 } 
             } catch (SocketDisconnected err) {
                 System.out.println("Deconnexion d'un client!");
-                connexions.remove(connexion);
-                System.out.println(connexions.size());
                 connexion.close();
+                c.remove();
             }
         }
         return messages;
