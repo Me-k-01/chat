@@ -57,7 +57,6 @@ public class Server {
 
     public List<byte[]> readAll() {
         List<byte[]> messages = new ArrayList<byte[]>();
-        System.out.println(connexions.size());
         for (Iterator<Connexion> c = connexions.iterator(); c.hasNext();) {
             Connexion connexion = c.next();
             try {
