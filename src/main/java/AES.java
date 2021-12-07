@@ -14,7 +14,7 @@ public class AES {
         this.AESKey = null;
         loadKey(); // Chargement automatique de la clé
 
-        try {
+        try { // Instantiation du crypteur
             this.cipher = Cipher.getInstance("AES");
         } catch (NoSuchAlgorithmException e) {
             System.out.println("Algorithm doesn't exist for Cipher");
@@ -28,14 +28,14 @@ public class AES {
     public byte[] encryptText(String text)
     {
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, this.AESKey);
+            cipher.init(Cipher.ENCRYPT_MODE, this.AESKey); // Mise en mode encryption avec notre clé AES
         } catch (InvalidKeyException e) {
             System.out.println("Non-valid key provided to cipher init (Encryption)");
             e.printStackTrace();
         }
 
-        try { // Faire la gestion d'erreur
-            return cipher.doFinal(text.getBytes());
+        try {
+            return cipher.doFinal(text.getBytes()); // Encryptage du texte
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
             return new byte[1];
@@ -48,14 +48,14 @@ public class AES {
     public String decryptText(byte[] encryptedText)
     {
         try {
-            cipher.init(Cipher.DECRYPT_MODE, this.AESKey);
+            cipher.init(Cipher.DECRYPT_MODE, this.AESKey); // Mise en mode décryption avec notre clé AES
         } catch (InvalidKeyException e) {
             System.out.println("Non-valid key provided to cipher init (Decryption)");
             e.printStackTrace();
         }
 
         try {
-            return new String(cipher.doFinal(encryptedText));
+            return new String(cipher.doFinal(encryptedText)); // Décryption du texte
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
             return new String();
@@ -69,11 +69,13 @@ public class AES {
     public void loadKey()
     {
         try {
+            // Chargement du fichier au est stocké la clé
             FileInputStream file = new FileInputStream(new File("AESKey"));
 
             int nbrByte = 0;
             int newByte;
 
+            // Lecture du fichier 
             ArrayList<Integer> byteList = new ArrayList<Integer>();
             while ((newByte = file.read()) != -1) {
                 nbrByte++;
@@ -82,10 +84,12 @@ public class AES {
 
             byte[] aeskeyByte = new byte[nbrByte];
 
+            // Mettre la clé dans une forme sous laquelle elle peut être chargée
             for (int i = 0; i < nbrByte; i++) {
                 aeskeyByte[i] = byteList.get(i).byteValue();
             }
 
+            // Chargement de la clé
             this.AESKey = new SecretKeySpec(aeskeyByte, "AES");
             
 
@@ -100,12 +104,12 @@ public class AES {
 
     public static void generateAESKey()
     {
-        KeyGenerator kg;
+        KeyGenerator kg; // Instantiation du générateur de clé
         try {
-            kg = KeyGenerator.getInstance("AES");
+            kg = KeyGenerator.getInstance("AES"); // en mode AES
             SecretKey key = kg.generateKey();
 
-            FileOutputStream file = new FileOutputStream("AESKey");
+            FileOutputStream file = new FileOutputStream("AESKey"); // Ouverture du fichier pour stocké la nouvelle clé
             file.write(key.getEncoded());
             file.close();
             
@@ -124,7 +128,8 @@ public class AES {
     public static void main(String[] args) {
         //generateAESKey();
 
-        // Un message "Test" doit
+        // Un message "Test" doit apparaitre dans le terminal pour vérifier que le passage par
+        // l'encryption et la décryption fonctionne
         AES aes = new AES();
         System.out.println(aes.decryptText(aes.encryptText("Test")));
     }

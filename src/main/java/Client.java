@@ -10,9 +10,9 @@ public class Client extends Server {
     
     @Override
     public void connect()  {
-        String conAddress = "127.0.0.1"; int conPort = 4444;
+        String conAddress = null; int conPort = 4444;
 
-        Properties prop = new Properties();
+        Properties prop = new Properties(); // Chargement des configuration (adresse IP et port)
         try (FileInputStream fis = new FileInputStream("config.conf")) {
             prop.load(fis);
             conAddress = prop.getProperty("SERVER_ADDRESS");
@@ -22,8 +22,8 @@ public class Client extends Server {
         }
 
         try{
-            Socket echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
-            out = new DataOutputStream(echoSocket.getOutputStream());
+            Socket echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; // Connection au serveur
+            out = new DataOutputStream(echoSocket.getOutputStream()); // Et ouverture des streams d'E/S
             in = new DataInputStream(echoSocket.getInputStream());
         } catch (UnknownHostException e) {
             System.out.println("Destination inconnu: " + conAddress + ":" + conPort) ;

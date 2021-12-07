@@ -15,8 +15,9 @@ public class Server {
         this.port = port;
         aes = new AES();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        connect();
+        connect(); // Accepter la prochaine connexion entrante
 
+        // Le thread va lire les messages entrants tant qu'il ne reçoit pas "bye"
         listenThread = new Thread() {
             public void run() { // Réception
                 String msg = "";
@@ -25,8 +26,8 @@ public class Server {
                     try {
                          // on passe si aucun message n'a été envoyé depuis 
                         if (in.available() <= 0) { continue; }
-                        received = new byte[in.readInt()];
-                        in.read(received);
+                        received = new byte[in.readInt()]; // On lit combien de byte contient le prochain message
+                        in.read(received); // Puis on lit ce nombre de byte
                     } catch (SocketException e) { 
                         System.out.println("Fin de la communication"); 
                     } catch (IOException e) { 
@@ -34,19 +35,19 @@ public class Server {
                     }
 
                     System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                    msg = aes.decryptText(received);
+                    msg = aes.decryptText(received); // Décryption du texte
                     System.out.println("\nDéchiffré : " + msg);
 
                     try { Thread.sleep(50); } 
-                    catch (InterruptedException e) { return; } // On arrette d'écouter lorsque l'on est interrompu
+                    catch (InterruptedException e) { return; } // On arrete d'écouter lorsque l'on est interrompu
                 }
 
             }
         };
-        listenThread.start(); // démarage du thread pour la reception    
+        listenThread.start(); // démarrage du thread pour la reception    
 
         try {
-            write();
+            write(); // Fonction bloquante pour l'envoi de message
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
@@ -57,7 +58,7 @@ public class Server {
     public void connect() {
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port); // Création du socket
         } catch (IOException err) {
             System.out.println("Port occupé: " + port);
             System.exit(-1);
@@ -65,7 +66,7 @@ public class Server {
         System.out.println("Le serveur écoute sur le port: " + port);
         
         try {
-            Socket echoSocket = serverSocket.accept();
+            Socket echoSocket = serverSocket.accept(); // En attente de connexion
             out = new DataOutputStream(echoSocket.getOutputStream());
             in = new DataInputStream(echoSocket.getInputStream());
         } catch (IOException err) {
@@ -80,8 +81,8 @@ public class Server {
         ////////// Envoie //////////
         while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
             byte[] encryptedText = aes.encryptText(usrInput);
-            out.writeInt(encryptedText.length);
-            out.write(encryptedText);
+            out.writeInt(encryptedText.length); // On écrit la taille du message sortant
+            out.write(encryptedText); // Et le contenu du message crypté
             if (usrInput.equals("bye")) { break; }
         } 
         out.close();
