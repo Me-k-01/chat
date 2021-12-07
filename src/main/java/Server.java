@@ -10,8 +10,15 @@ public class Server {
     Set<Connexion> connexions;
     Thread readThread;
 
-    public Server(int port) {
-        this.port = port;
+    public Server() {
+        ////////// Config //////////
+        Properties prop = new Properties();
+        try (FileInputStream fis = new FileInputStream("config.conf")) {
+            prop.load(fis); // On charge du fichier config
+            port = Integer.parseInt(prop.getProperty("SERVER_PORT").trim()); // Récupérer le port du serveur
+        } catch (IOException err) {
+            throw new RuntimeException("Fichier config.conf non trouvé.");
+        }
         aes = new AES();
         connexions = new HashSet<Connexion>();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
@@ -90,6 +97,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        new Server(4444);
+        new Server();
     }
 }

@@ -18,19 +18,19 @@ public class Client {
     String conAddress;
     int conPort;
 
-    public Client(int port) {
-        this.port = port;
-        aes = new AES();
-        stdIn = new BufferedReader(new InputStreamReader(System.in));
+    public Client() {
+        aes = new AES(); // cryptage AES
+        stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
 
-        // Récuperer l'adresse et le port du server dans le fichier config
+        ////////// Config //////////
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream("config.conf")) {
-            prop.load(fis);
-            conAddress = prop.getProperty("SERVER_ADDRESS");
-            conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim());
+            prop.load(fis); // On charge du fichier config
+            conAddress = prop.getProperty("SERVER_ADDRESS").trim(); // Récupérer l'adresse 
+            conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim()); // Récupérer le port du serveur
+            port = Integer.parseInt(prop.getProperty("CLIENT_PORT").trim()); // Récupérer le port du client
         } catch (IOException err) {
-            System.out.println("Fichier config non trouvé.");
+            throw new RuntimeException("Fichier config.conf non trouvé.");
         }
         connect();
 
@@ -75,16 +75,16 @@ public class Client {
     }
     public void write() throws IOException {
         String usrInput = null;
-        ////////// Envoie //////////
+        ////////// Envoie des entrées utilisateur //////////
         // Tant que l'on a des entrées de l'utilisateur
         while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye")) { 
-            // On les cryptes
+            // On crypte le message a envoyer
             byte[] encryptedText = aes.encryptText(usrInput);
-            // Et on les envoies
+            // Et on les envoies au serveur
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
         } 
-        // Fermer les streams
+        ////////// Fermer les streams //////////
         out.close();
         in.close();
         listenThread.interrupt();
@@ -92,9 +92,9 @@ public class Client {
 
     public void connect()  {
         try {
-            // Se connecter au serveur
+            ////////// Connection au serveur //////////
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
-            // I / O
+            ////////// I / O //////////
             in  = new DataInputStream( echoSocket.getInputStream());
             out = new DataOutputStream(echoSocket.getOutputStream());
         } catch (UnknownHostException e) {
@@ -108,6 +108,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        new Client(4444); 
+        new Client(); 
     }
 }
