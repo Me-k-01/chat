@@ -23,6 +23,7 @@ public class Client {
         aes = new AES();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
 
+        // Récuperer l'adresse et le port du server dans le fichier config
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream("config.conf")) {
             prop.load(fis);
@@ -33,16 +34,21 @@ public class Client {
         }
         connect();
 
-        listenThread = new Thread() {
+        /* Thread pour pouvoir écouter les nouveaux messages entrants 
+        sans être bloqué par l'entrée utilisateur qui est bloquante  */    
+        listenThread = new Thread() { 
             public void run() {
                 while ( true ) {
                     try {
+                        // Si il y a un nouveau message disponnible
                         if (in.available() > 0) {
+                            // On lit le message
                             byte[] received = new byte[in.readInt()];
                             in.read(received);
-
+                            // On le decrypte
                             System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                             String msg = aes.decryptText(received);
+                            // Et on l'affiche à l'utilisateur
                             System.out.println("\nDéchiffré : " + msg);
                         }
                     } catch (SocketException e) {
@@ -51,8 +57,9 @@ public class Client {
                         e.printStackTrace();
                     }
 
+                    // On arrête d'attendre lorsque le thread est interrompu  
                     try { Thread.sleep(50); } 
-                    catch (InterruptedException e) { return; } // On arrette d'attendre quand on est interrompu  
+                    catch (InterruptedException e) { return; } 
                 }
             }
         };
@@ -69,11 +76,15 @@ public class Client {
     public void write() throws IOException {
         String usrInput = null;
         ////////// Envoie //////////
-        while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye")) { // Tant que l'on a des input
+        // Tant que l'on a des entrées de l'utilisateur
+        while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye")) { 
+            // On les cryptes
             byte[] encryptedText = aes.encryptText(usrInput);
+            // Et on les envoies
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
         } 
+        // Fermer les streams
         out.close();
         in.close();
         listenThread.interrupt();
@@ -81,9 +92,11 @@ public class Client {
 
     public void connect()  {
         try {
+            // Se connecter au serveur
             echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; 
+            // I / O
+            in  = new DataInputStream( echoSocket.getInputStream());
             out = new DataOutputStream(echoSocket.getOutputStream());
-            in = new DataInputStream(echoSocket.getInputStream());
         } catch (UnknownHostException e) {
             System.out.println("Destination inconnu: " + conAddress + ":" + conPort) ;
             System.exit(-1);
