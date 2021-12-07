@@ -63,7 +63,7 @@ public class Server {
                 byte[] received = connexion.read(); 
                 if (received != null) {
                     messages.add(received);
-                    System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                    System.out.println("- Message reçu :\nChiffré : " + Arrays.toString(received));
                 } 
             } catch (SocketDisconnected err) {
                 System.out.println("Deconnexion d'un client!");
