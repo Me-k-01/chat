@@ -5,7 +5,6 @@ import java.util.*;
 
 public class Server {
     int port; 
-    BufferedReader stdIn;
     AES aes;
     Set<Connexion> connexions;
     Thread readThread;
@@ -19,10 +18,11 @@ public class Server {
         } catch (IOException err) {
             throw new RuntimeException("Fichier config.conf non trouvé.");
         }
-        aes = new AES();
-        connexions = new HashSet<Connexion>();
-        stdIn = new BufferedReader(new InputStreamReader(System.in));
-        readThread = new Thread() { // Thread pour lire ce que les clients envoient au serveur
+        aes = new AES(); // Crypteur AES
+        connexions = new HashSet<Connexion>(); 
+
+         // Thread pour lire ce que les clients envoient au serveur
+        readThread = new Thread() {
             public void run() {
                 while ( true ) {
                     List<byte[]> msgToBroadcast = readAll(); // Lire tout les clients
@@ -40,18 +40,23 @@ public class Server {
         readThread.interrupt();
     }    
 
-    public void listenConnection() { // Attendre des nouvelles connections de clients
+    // Attendre des nouvelles connections de clients au serveur
+    public void listenConnection() {
         ServerSocket server = null;
+        ////////// Creation du serveur //////////
         try {
             server = new ServerSocket(port);
         } catch (IOException e) {
             System.out.println("Le socket du serveur n'a pas pu être ouvert :");
             e.printStackTrace();
         }
+
+        ////////// Écoute //////////
         while (true) {
             Socket newClient = null;
             try {
-                newClient = server.accept(); // Accepter les nouveaux clients qui se connectent
+                // Accepter les nouveaux clients qui se connectent
+                newClient = server.accept(); 
             } catch (IOException e) {
                 System.out.println("Le serveur n'arrive pas à accepter de nouvelles connexions");
                 e.printStackTrace();

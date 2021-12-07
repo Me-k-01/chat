@@ -19,7 +19,7 @@ public class Client {
     int conPort;
 
     public Client() {
-        aes = new AES(); // cryptage AES
+        aes = new AES(); // Crypteur AES
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
 
         ////////// Config //////////
