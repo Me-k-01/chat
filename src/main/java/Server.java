@@ -58,8 +58,8 @@ public class Server {
     public List<byte[]> readAll() {
         List<byte[]> messages = new ArrayList<byte[]>();
         System.out.println(connexions.size());
-
-        for (Connexion connexion : connexions) {
+        for (Iterator<Connexion> c = connexions.iterator(); c.hasNext();) {
+            Connexion connexion = c.next();
             try {
                 byte[] received = connexion.read(); 
                 if (received != null) {
@@ -78,13 +78,14 @@ public class Server {
 
     public void broadcast(List<byte[]> msgToBroadcast) {
         for (byte[] msg : msgToBroadcast) {
-            for (Connexion connexion : connexions) {
+            for (Iterator<Connexion> c = connexions.iterator(); c.hasNext();) {
+                Connexion connexion = c.next();
                 try {
                     connexion.send(msg);
                 } catch (SocketDisconnected err) {
                     System.out.println("Deconnexion d'un client!");
-                    connexions.remove(connexion);
                     connexion.close();
+                    c.remove();
                 }
             }
         }
