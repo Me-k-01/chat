@@ -57,6 +57,7 @@ public class Server {
 
     public List<byte[]> readAll() {
         List<byte[]> messages = new ArrayList<byte[]>();
+        System.out.println(connexions.size());
 
         for (Connexion connexion : connexions) {
             try {
@@ -68,6 +69,7 @@ public class Server {
             } catch (SocketDisconnected err) {
                 System.out.println("Deconnexion d'un client!");
                 connexions.remove(connexion);
+                System.out.println(connexions.size());
             }
         }
         return messages;

@@ -19,11 +19,11 @@ public class Connexion {
     }
 
     public byte[] read() throws SocketDisconnected {
+        if (socket.isClosed()) throw new SocketDisconnected();
         byte[] msg = null;
 
         try {
-            if (in.available() > 0)
-            {
+            if (in.available() > 0) {
                 msg = new byte[in.readInt()];
                 in.read(msg);
             }
@@ -35,6 +35,8 @@ public class Connexion {
     }
 
     public void send(byte[] msg) throws SocketDisconnected {
+        if (socket.isClosed()) throw new SocketDisconnected();
+
         try {
             out.writeInt(msg.length);
             out.write(msg);
