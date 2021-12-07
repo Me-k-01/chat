@@ -1,0 +1,11 @@
+- commentez votre code et justifiez votre choix (numéro de port, algorithmes, types 
+de cryptographie ...)
+
+- Votre code doit pouvoir s’exécuter sur n’importe quelle machine sans demander de 
+créer une arborescence de fichiers particulière ou des IP spécifiques.
+
+- Votre rendu consistera en votre code source et un rapport décrivant ou vous en êtes 
+rendu, les améliorations que vous avez apporté, les ports choisis, etc ..
+
+
+
