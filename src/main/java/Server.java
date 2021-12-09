@@ -15,7 +15,7 @@ public class Server implements ActionListener {
     
     public Server(int port) {
         super();
-        this.fenetre = new Interface();
+        this.fenetre = new Interface(this);
         this.port = port;
         aes = new AES();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
@@ -42,23 +42,24 @@ public class Server implements ActionListener {
                     msg = aes.decryptText(received); // Décryption du texte
                     System.out.println("\nDéchiffré : " + msg);
 
-                    fenetre.showMessage.append(Arrays.toString(received));
+                    fenetre.showMessage.append("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                    fenetre.showMessage.append("\nDéchiffré : " + msg + "\n\n");
 
                     try { Thread.sleep(50); } 
                     catch (InterruptedException e) { return; } // On arrete d'écouter lorsque l'on est interrompu
                 }
-
+                fenetre.dispose();
             }
         };
         listenThread.start(); // démarrage du thread pour la reception    
 
-        try {
+        /*try {
             write(); // Fonction bloquante pour l'envoi de message
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
             e.printStackTrace();
-        }   
+        }*/  
     }    
 
     public void connect() {
@@ -102,7 +103,20 @@ public class Server implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
-        
+        String usrInput = fenetre.input.getText();
+        fenetre.input.setText("");
+
+        byte[] encryptedText = aes.encryptText(usrInput);
+        try {
+            out.writeInt(encryptedText.length);
+            out.write(encryptedText); // Et le contenu du message crypté
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } // On écrit la taille du message sortant
+
+        if (usrInput.equals("bye")) {
+            this.fenetre.dispose();
+        }
     }
 }
