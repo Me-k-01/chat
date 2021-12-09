@@ -13,13 +13,7 @@ public class Server {
         aes = new AES(); // Crypteur AES
         connexions = new HashSet<Connexion>(); 
         ////////// Config //////////
-        Properties prop = new Properties();
-        try (FileInputStream fis = new FileInputStream("config.conf")) {
-            prop.load(fis); // On charge le fichier config
-            port = Integer.parseInt(prop.getProperty("SERVER_PORT").trim()); // Récupérer le port du serveur
-        } catch (IOException err) {
-            throw new RuntimeException("Fichier config.conf non trouvé.");
-        }
+        port = Config.getInt("SERVER_PORT"); 
 
         // Thread pour lire ce que les clients envoient au serveur
         readThread = new Thread() {

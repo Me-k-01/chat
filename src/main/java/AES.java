@@ -6,16 +6,10 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AES {
@@ -24,7 +18,7 @@ public class AES {
 
     public AES() {
         this.AESKey = null;
-        loadKey(); // Chargement automatique de la clé
+        generateKeyFromPassword(Config.get("PASSWORD")); // Chargement automatique de la clé
 
         try {
             this.cipher = Cipher.getInstance("AES");
@@ -65,16 +59,13 @@ public class AES {
 
         try {
             return new String(cipher.doFinal(encryptedText));
-        } catch (IllegalBlockSizeException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
-            return new String();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-            return new String();
+            return "";
         }
     }
 
-    public void save() {
+    public void saveFile() {
         try {
             FileOutputStream file = new FileOutputStream("AESKey");
             file.write(AESKey.getEncoded());
@@ -83,7 +74,7 @@ public class AES {
             throw new RuntimeException(err);
         }
     }
-    public void loadKey() {
+    public void loadFile() {
         try {
             FileInputStream file = new FileInputStream(new File("AESKey"));
 
@@ -136,7 +127,7 @@ public class AES {
         }
         return hash;
     }
-    
+
     public void generateKeyFromPassword(String password) {  // Générer une nouvelle clé a partir d'un mot de passe
         // decode the base64 encoded string
         Random rd = new Random();
@@ -158,7 +149,8 @@ public class AES {
         AES aes = new AES();
         /////// Générer une nouvelle clé ///////
         //generate();
-        //save(); 
+        //saveFile(); 
+        //loadFile(); 
 
         ///////  ///////
         /*
@@ -166,14 +158,6 @@ public class AES {
         System.out.println(test.length);
         System.out.println(Arrays.toString(test));
         */
-        aes.generateKeyFromPassword("test");
-        System.out.println(aes.toString());
-
-        aes.generateKeyFromPassword("test");
-        System.out.println(aes.toString());
-        aes.generateKeyFromPassword("test");
-        System.out.println(aes.toString());
-
         // Un message "Test" doit
         //System.out.println(aes.decryptText(aes.encryptText("Test")));
 

@@ -23,15 +23,10 @@ public class Client {
         aes = new AES(); // Crypteur AES
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
         ////////// Config //////////
-        Properties prop = new Properties();
-        try (FileInputStream fis = new FileInputStream("config.conf")) {
-            prop.load(fis); // On charge le fichier config
-            conAddress = prop.getProperty("SERVER_ADDRESS").trim(); // Récupérer l'adresse 
-            conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim()); // Récupérer le port du serveur
-            port = Integer.parseInt(prop.getProperty("CLIENT_PORT").trim()); // Récupérer le port du client
-        } catch (IOException err) {
-            throw new RuntimeException("Fichier config.conf non trouvé.");
-        }
+        conAddress = Config.get("SERVER_ADDRESS"); 
+        conPort = Config.getInt("SERVER_PORT"); 
+        port = Config.getInt("CLIENT_PORT"); 
+
         connect();
 
         /* Thread pour pouvoir écouter les nouveaux messages entrants 

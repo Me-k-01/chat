@@ -3,6 +3,12 @@ rendu, les améliorations que vous avez apporté, les ports choisis, etc ..
 
 Les ip est port du serveur sont à mettre dans le fichier config.conf  
 
+Dans multicast:
+Un mot de passe dans le fichier config génère la clé AES chez le client et le serveur
+
+Dans client to serveur:
+
+
 Rapport :
 1) ✓
 2) ✓
