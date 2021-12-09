@@ -1,17 +1,21 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 
-public class Server {
+public class Server implements ActionListener {
     int port; 
     DataOutputStream out = null;
     DataInputStream in = null;
     BufferedReader stdIn;
     AES aes;
     Thread listenThread;
+    Interface fenetre;
     
     public Server(int port) {
-        super();    
+        super();
+        this.fenetre = new Interface();
         this.port = port;
         aes = new AES();
         stdIn = new BufferedReader(new InputStreamReader(System.in));
@@ -37,6 +41,8 @@ public class Server {
                     System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                     msg = aes.decryptText(received); // Décryption du texte
                     System.out.println("\nDéchiffré : " + msg);
+
+                    fenetre.showMessage.append(Arrays.toString(received));
 
                     try { Thread.sleep(50); } 
                     catch (InterruptedException e) { return; } // On arrete d'écouter lorsque l'on est interrompu
@@ -92,5 +98,11 @@ public class Server {
 
     public static void main(String[] args) {
         new Server(4444);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }
