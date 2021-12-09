@@ -43,13 +43,12 @@ public class Client extends WindowAdapter implements ActionListener {
                             byte[] received = new byte[in.readInt()];
                             in.read(received);
                             // On le decrypte
-                            System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                             String msg = aes.decryptText(received);
-                            // Et on l'affiche à l'utilisateur
+                            System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                             System.out.println("\nDéchiffré : " + msg);
 
-                            fenetre.showMessage.append("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                            fenetre.showMessage.append("\nDéchiffré : " + msg + "\n\n");
+                            // Et on l'affiche à l'utilisateur
+                            fenetre.showMessage.append("Message reçu : " + msg + "\n");
                         }
                     } catch (SocketException e) {
                         System.out.println("Fin de la communication");
