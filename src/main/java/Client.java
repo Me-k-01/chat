@@ -1,10 +1,12 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 
-public class Client implements ActionListener {
+public class Client extends WindowAdapter implements ActionListener {
     Interface fenetre;
     public Socket echoSocket = null;
     Socket clientSocket = null;
@@ -19,7 +21,7 @@ public class Client implements ActionListener {
     AES aes;
 
     public Client() {
-        this.fenetre = new Interface(this);
+        this.fenetre = new Interface(this, this);
         aes = new AES(); // Crypteur AES
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
         ////////// Config //////////
@@ -130,5 +132,19 @@ public class Client implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void windowClosing(WindowEvent e)
+    {
+        byte[] encryptedText = aes.encryptText("bye");
+        try {
+            out.writeInt(encryptedText.length);
+            out.write(encryptedText);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        System.exit(-1);
     }
 }

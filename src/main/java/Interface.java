@@ -1,18 +1,20 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 
 public class Interface extends Frame {
     
     TextArea showMessage;
     TextField input;
 
-    public Interface(ActionListener listener)
+    public Interface(ActionListener listener, WindowAdapter wa)
     {
         super();
         setTitle("Chat");
         setSize(720, 480);
         setLayout(new FlowLayout());
         setBackground(Color.BLACK);
+        addWindowListener(wa);
 
         showMessage = new TextArea();
         showMessage.setEditable(false);
