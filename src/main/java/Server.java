@@ -64,7 +64,7 @@ public class Server {
     // Lire les messages que l'on a pu recevoir sur tout les sockets
     public List<byte[]> readAll() { 
         List<byte[]> messages = new ArrayList<byte[]>();
-        // On itere avec Iterator pour pouvoir supprimer la connection de la liste si le socket a été fermé
+        // On itère avec Iterator pour pouvoir supprimer la connection de la liste si le socket a été fermé
         for (Iterator<Connexion> c = connexions.iterator(); c.hasNext();) { 
             Connexion connexion = c.next();
             try {

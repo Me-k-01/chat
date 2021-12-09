@@ -129,8 +129,8 @@ public class Client extends WindowAdapter implements ActionListener {
                 in.close();
                 listenThread.interrupt();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException err) {
+            err.printStackTrace();
         }
     }
 
@@ -140,9 +140,8 @@ public class Client extends WindowAdapter implements ActionListener {
         try {
             out.writeInt(encryptedText.length);
             out.write(encryptedText);
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (IOException err) {
+            err.printStackTrace();
         }
 
         System.exit(-1);
