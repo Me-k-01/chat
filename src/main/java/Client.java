@@ -130,7 +130,5 @@ public class Client implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        
     }
 }
