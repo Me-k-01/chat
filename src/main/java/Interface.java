@@ -24,6 +24,7 @@ public class Interface extends Frame {
         input = new TextField("", 20);
         input.setBackground(Color.BLACK);
         input.setForeground(Color.WHITE);
+        input.addActionListener(listener);
         this.add(input);
 
         Button envoi = new Button("Envoyer le message");
