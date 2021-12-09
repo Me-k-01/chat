@@ -1,8 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -147,19 +143,15 @@ public class AES {
   
     public static void main(String[] args) {
         AES aes = new AES();
+
         /////// Générer une nouvelle clé ///////
         //generate();
         //saveFile(); 
         //loadFile(); 
 
         ///////  ///////
-        /*
-        byte[] test = Base64.getDecoder().decode(aes.toString());
-        System.out.println(test.length);
-        System.out.println(Arrays.toString(test));
-        */
         // Un message "Test" doit
-        //System.out.println(aes.decryptText(aes.encryptText("Test")));
+        System.out.println(aes.decryptText(aes.encryptText("Test")));
 
     }
 }

@@ -1,10 +1,6 @@
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Arrays;
-import java.util.Properties;
 
 public class Client {
     public Socket echoSocket = null;
