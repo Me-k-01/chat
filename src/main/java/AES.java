@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -72,25 +74,30 @@ public class AES {
         }
     }
 
-
+    public void save() {
+        try {
+            FileOutputStream file = new FileOutputStream("AESKey");
+            file.write(AESKey.getEncoded());
+            file.close();
+        } catch (IOException err) {
+            throw new RuntimeException(err);
+        }
+    }
     public void loadKey() {
         try {
             FileInputStream file = new FileInputStream(new File("AESKey"));
 
-            int nbrByte = 0;
-            int newByte;
+            int nbrByte = 0; int newByte;
 
             ArrayList<Integer> byteList = new ArrayList<Integer>();
-            while ((newByte = file.read()) != -1)
-            {
+            while ((newByte = file.read()) != -1) {
                 nbrByte++;
                 byteList.add(newByte);
             }
 
             byte[] aeskeyByte = new byte[nbrByte];
 
-            for (int i = 0; i < nbrByte; i++)
-            {
+            for (int i = 0; i < nbrByte; i++) {
                 aeskeyByte[i] = byteList.get(i).byteValue();
             }
 
@@ -105,11 +112,6 @@ public class AES {
             e.printStackTrace();
         }
     }
-    @Override
-    public String toString() {
-        // get base64 encoded version of the key
-        return Base64.getEncoder().encodeToString(AESKey.getEncoded());
-    }   
 
     public static SecretKey strToKey(String str) {
         // decode the base64 encoded string
@@ -118,7 +120,7 @@ public class AES {
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES"); 
     }
 
-    public void generate() {
+    public void generate() { // Générer une nouvelle clé random 
         KeyGenerator kg;
         try {
             kg = KeyGenerator.getInstance("AES");
@@ -127,24 +129,53 @@ public class AES {
             throw new RuntimeException(err);
         }
     }
-    public void save() {
-
-        try {
-            FileOutputStream file = new FileOutputStream("AESKey");
-            file.write(AESKey.getEncoded());
-            file.close();
-        } catch (IOException err) {
-            throw new RuntimeException(err);
+    private static long stringToSeed(String s) {
+        long hash = 0;
+        for (char c : s.toCharArray()) {
+            hash = 31L*hash + c;
         }
+        return hash;
     }
+    
+    public void generateKeyFromPassword(String password) {  // Générer une nouvelle clé a partir d'un mot de passe
+        // decode the base64 encoded string
+        Random rd = new Random();
+        rd.setSeed(stringToSeed(password));
+
+        byte[] keyBytes = new byte[16];
+        rd.nextBytes(keyBytes);
+        // rebuild key using SecretKeySpec
+        AESKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES"); 
+    } 
+
+    @Override
+    public String toString() {
+        // get base64 encoded version of the key
+        return Base64.getEncoder().encodeToString(AESKey.getEncoded());
+    }   
+  
     public static void main(String[] args) {
+        AES aes = new AES();
+        /////// Générer une nouvelle clé ///////
         //generate();
         //save(); 
 
-        // Un message "Test" doit
-        AES aes = new AES();
-        //System.out.println(aes.decryptText(aes.encryptText("Test")));
+        ///////  ///////
+        /*
+        byte[] test = Base64.getDecoder().decode(aes.toString());
+        System.out.println(test.length);
+        System.out.println(Arrays.toString(test));
+        */
+        aes.generateKeyFromPassword("test");
+        System.out.println(aes.toString());
 
+        aes.generateKeyFromPassword("test");
+        System.out.println(aes.toString());
+        aes.generateKeyFromPassword("test");
+        System.out.println(aes.toString());
+
+        // Un message "Test" doit
+        //System.out.println(aes.decryptText(aes.encryptText("Test")));
 
     }
 }
