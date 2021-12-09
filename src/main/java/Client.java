@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -6,7 +8,8 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class Client {
+public class Client implements ActionListener {
+    Interface fenetre;
     public Socket echoSocket = null;
     Socket clientSocket = null;
     DataOutputStream out = null;
@@ -20,10 +23,11 @@ public class Client {
     AES aes;
 
     public Client() {
+        this.fenetre = new Interface(this);
         aes = new AES(); // Crypteur AES
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
         ////////// Config //////////
-        conAddress = Config.get("SERVER_ADDRESS"); 
+        conAddress = Config.get("SERVER_ADDRESS");
         conPort = Config.getInt("SERVER_PORT"); 
         port = Config.getInt("CLIENT_PORT"); 
 
@@ -45,6 +49,9 @@ public class Client {
                             String msg = aes.decryptText(received);
                             // Et on l'affiche à l'utilisateur
                             System.out.println("\nDéchiffré : " + msg);
+
+                            fenetre.showMessage.append("- Message reçu :\nChiffré : " + Arrays.toString(received));
+                            fenetre.showMessage.append("\nDéchiffré : " + msg + "\n\n");
                         }
                     } catch (SocketException e) {
                         System.out.println("Fin de la communication");
@@ -59,13 +66,13 @@ public class Client {
             }
         };
         listenThread.start();
-        try {
+        /*try {
             write(); // Les écritures de l'utilisateur
         } catch (SocketException e) {
             System.out.println("Arrêt de la connection");
         } catch (IOException e) {
             e.printStackTrace();
-        }   
+        }*/  
     }
     // Crypter ce que l'utilisateur écrit et l'envoyer au serveur
     public void write() throws IOException {  
@@ -105,5 +112,29 @@ public class Client {
 
     public static void main(String[] args) {
         new Client(); 
+    }
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        String usrInput = fenetre.input.getText();
+        fenetre.input.setText("");
+
+        // On crypte le message a envoyer
+        byte[] encryptedText = aes.encryptText(usrInput);
+        // Et on les envoies au serveur
+        try {
+            out.writeInt(encryptedText.length);
+            out.write(encryptedText);
+
+            if (usrInput.equals("bye")) {
+                this.fenetre.dispose();
+                out.close();
+                in.close();
+                listenThread.interrupt();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        
     }
 }
