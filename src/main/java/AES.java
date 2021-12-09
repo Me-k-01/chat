@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -19,8 +20,7 @@ public class AES {
     private SecretKey AESKey;
     private Cipher cipher;
 
-    public AES()
-    {
+    public AES() {
         this.AESKey = null;
         loadKey(); // Chargement automatique de la clé
 
@@ -34,8 +34,7 @@ public class AES {
         }
     }
 
-    public byte[] encryptText(String text)
-    {
+    public byte[] encryptText(String text) {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, this.AESKey);
         } catch (InvalidKeyException e) {
@@ -54,8 +53,7 @@ public class AES {
         }
     }
 
-    public String decryptText(byte[] encryptedText)
-    {
+    public String decryptText(byte[] encryptedText) {
         try {
             cipher.init(Cipher.DECRYPT_MODE, this.AESKey);
         } catch (InvalidKeyException e) {
@@ -75,8 +73,7 @@ public class AES {
     }
 
 
-    public void loadKey()
-    {
+    public void loadKey() {
         try {
             FileInputStream file = new FileInputStream(new File("AESKey"));
 
@@ -108,36 +105,46 @@ public class AES {
             e.printStackTrace();
         }
     }
+    @Override
+    public String toString() {
+        // get base64 encoded version of the key
+        return Base64.getEncoder().encodeToString(AESKey.getEncoded());
+    }   
 
-    public static void generateAESKey()
-    {
+    public static SecretKey strToKey(String str) {
+        // decode the base64 encoded string
+        byte[] decodedKey = Base64.getDecoder().decode(str);
+        // rebuild key using SecretKeySpec
+        return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES"); 
+    }
+
+    public void generate() {
         KeyGenerator kg;
         try {
             kg = KeyGenerator.getInstance("AES");
-            SecretKey key = kg.generateKey();
-
-            FileOutputStream file = new FileOutputStream("AESKey");
-            file.write(key.getEncoded());
-            file.close();
-            
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("Unknown algorithm");
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't open encryption key file");
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println("Couldn't write to opened key file");
-            e.printStackTrace();
+            AESKey = kg.generateKey();
+        } catch (NoSuchAlgorithmException err) {
+            throw new RuntimeException(err);
         }
     }
+    public void save() {
 
-    public static void main(String[] args)
-    {
-        //generateAESKey();
+        try {
+            FileOutputStream file = new FileOutputStream("AESKey");
+            file.write(AESKey.getEncoded());
+            file.close();
+        } catch (IOException err) {
+            throw new RuntimeException(err);
+        }
+    }
+    public static void main(String[] args) {
+        //generate();
+        //save(); 
 
         // Un message "Test" doit
         AES aes = new AES();
-        System.out.println(aes.decryptText(aes.encryptText("Test")));
+        //System.out.println(aes.decryptText(aes.encryptText("Test")));
+
+
     }
 }

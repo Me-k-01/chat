@@ -21,7 +21,7 @@ public class Server {
             throw new RuntimeException("Fichier config.conf non trouvé.");
         }
 
-         // Thread pour lire ce que les clients envoient au serveur
+        // Thread pour lire ce que les clients envoient au serveur
         readThread = new Thread() {
             public void run() {
                 while ( true ) {
