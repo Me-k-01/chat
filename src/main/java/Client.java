@@ -112,6 +112,7 @@ public class Client extends WindowAdapter implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
         String usrInput = fenetre.input.getText();
+        if (usrInput.isEmpty()) return;
         fenetre.input.setText("");
 
         // On crypte le message a envoyer
