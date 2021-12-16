@@ -1,9 +1,9 @@
 # chat
-
+Projet de mini-chat crypté AES en java.
 
 ## Configuration:
-Dans le fichier config.conf
-mettre l'adresse ip du serveur, son port et le port du client
+Dans le fichier client.conf mettre l'adresse ip du serveur, son port, le port du client et le mot de passe
+Et dans le fichier server.conf mettre le port du serveur
 
 ## Lancement du serveur: 
 ```sh
