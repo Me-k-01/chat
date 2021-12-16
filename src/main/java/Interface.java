@@ -32,4 +32,7 @@ public class Interface extends Frame {
 
         setVisible(true);
     }
+    public void write(String str) { 
+        this.showMessage.append(str + "\n");
+    }
 }

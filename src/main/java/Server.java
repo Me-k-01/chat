@@ -2,7 +2,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 public class Server implements ActionListener {
     int port; 
@@ -14,16 +14,16 @@ public class Server implements ActionListener {
     
     public Server() {
         aes = new AES();
-        this.port = Config.getInt("SERVER_PORT");
+        port = Config.getInt("SERVER_PORT");
         connect();  
-        this.fenetre = new Interface(this);
+        fenetre = new Interface(this);
         read();
     }    
-    public Server(int port) {
+    public Server(int serverPort) {
         aes = new AES();
-        this.port = port;
+        port = serverPort;
         connect();  
-        this.fenetre = new Interface(this);
+        fenetre = new Interface(this);
         read();
     }    
 
@@ -45,17 +45,19 @@ public class Server implements ActionListener {
                         e.printStackTrace();  
                     }
 
-                    System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                     msg = aes.decryptText(received); // Décryption du texte
-                    System.out.println("\nDéchiffré : " + msg);
+                    String crypte = new String(received, StandardCharsets.UTF_8); // Message crypté
 
-                    fenetre.showMessage.append("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                    fenetre.showMessage.append("\nDéchiffré : " + msg + "\n\n");
+                    // System.out.print("- Message reçu :\nChiffré : " + crypte);
+                    // System.out.println("\nDéchiffré : " + msg);
+                    fenetre.write("\n - Message reçu : " + msg);
+                    fenetre.write("   [Chiffré : \"" + crypte + "\"]");
 
                     try { Thread.sleep(50); } 
                     catch (InterruptedException e) { return; } // On arrete d'écouter lorsque l'on est interrompu
                 }
                 fenetre.dispose();
+                listenThread.interrupt();
             }
         };
         listenThread.start(); // démarrage du thread pour la reception    
@@ -89,13 +91,14 @@ public class Server implements ActionListener {
         fenetre.input.setText("");
 
         byte[] encryptedText = aes.encryptText(usrInput);
+        fenetre.write("\n - Message envoyé : " + usrInput);
+
         try {
-            out.writeInt(encryptedText.length);
+            out.writeInt(encryptedText.length); // On écrit la taille du message sortant
             out.write(encryptedText); // Et le contenu du message crypté
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (IOException e) { 
             e.printStackTrace();
-        } // On écrit la taille du message sortant
+        }
 
         if (usrInput.equals("bye")) {
             this.fenetre.dispose();
