@@ -77,6 +77,7 @@ public class Server extends WindowAdapter implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
         String usrInput = fenetre.input.getText();
+        if (usrInput.isEmpty()) return;
         fenetre.input.setText("");
 
         byte[] encryptedText = aes.encryptText(usrInput);

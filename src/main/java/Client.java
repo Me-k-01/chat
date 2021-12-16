@@ -27,6 +27,6 @@ public class Client extends Server {
     }
 
     public static void main(String[] args) {
-        new Client( ); 
+        new Client(); 
     }
 }
