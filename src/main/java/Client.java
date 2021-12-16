@@ -4,7 +4,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 public class Client extends WindowAdapter implements ActionListener {
     Interface fenetre;
@@ -44,10 +44,14 @@ public class Client extends WindowAdapter implements ActionListener {
                             in.read(received);
                             // On le decrypte
                             String msg = aes.decryptText(received);
-                            System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
-                            System.out.println("\nDéchiffré : " + msg);
+                            String crypte = new String(received, StandardCharsets.UTF_8); // Message crypté
+                            
+                            // System.out.print("- Message reçu :\nChiffré : " + crypte);
+                            // System.out.println("\nDéchiffré : " + msg);
+
                             // Et on l'affiche à l'utilisateur
-                            fenetre.showMessage.append("Message reçu : " + msg + "\n");
+                            fenetre.write("\n - Message reçu : " + msg);
+                            fenetre.write("   [Chiffré : \"" + crypte + "\"]");
                         }
                     } catch (SocketException e) {
                         System.out.println("Fin de la communication");
@@ -62,32 +66,7 @@ public class Client extends WindowAdapter implements ActionListener {
             }
         };
         listenThread.start();
-        /*try {
-            write(); // Les écritures de l'utilisateur
-        } catch (SocketException e) {
-            System.out.println("Arrêt de la connection");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/  
     }
-    // Crypter ce que l'utilisateur écrit et l'envoyer au serveur
-    public void write() throws IOException {  
-        String usrInput = null;
-        ////////// Envoie des entrées utilisateur //////////
-        // Tant que l'on a des entrées de l'utilisateur
-        while ((usrInput = stdIn.readLine() ) != null && ! usrInput.equals("bye")) { 
-            // On crypte le message a envoyer
-            byte[] encryptedText = aes.encryptText(usrInput);
-            // Et on les envoies au serveur
-            out.writeInt(encryptedText.length);
-            out.write(encryptedText);
-        } 
-        ////////// Fermer les streams //////////
-        out.close();
-        in.close();
-        listenThread.interrupt();
-    }
-
      // Se connecter au serveur
     public void connect()  {
         try {
@@ -133,8 +112,8 @@ public class Client extends WindowAdapter implements ActionListener {
         }
     }
 
-    public void windowClosing(WindowEvent e)
-    {
+    @Override
+    public void windowClosing(WindowEvent e) {
         byte[] encryptedText = aes.encryptText("bye");
         try {
             out.writeInt(encryptedText.length);
