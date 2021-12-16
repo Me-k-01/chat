@@ -1,9 +1,4 @@
-import java.awt.Button;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.TextArea;
-import java.awt.TextField;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Interface extends Frame {
@@ -11,8 +6,7 @@ public class Interface extends Frame {
     TextArea showMessage;
     TextField input;
 
-    public Interface(ActionListener listener)
-    {
+    public Interface(ActionListener listener) {
         super();
         setTitle("Chat");
         setSize(720, 480);

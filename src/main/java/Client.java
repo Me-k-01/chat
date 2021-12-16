@@ -1,25 +1,16 @@
 import java.io.*;
 import java.net.*;
-import java.util.Properties;
 
 public class Client extends Server {
-
-    public Client(int port) {
-        super(port);
+    public Client( ) {
+        super(Config.getInt("CLIENT_PORT")); 
     }
     
     @Override
     public void connect()  {
         String conAddress = null; int conPort = 4444;
-
-        Properties prop = new Properties(); // Chargement des configuration (adresse IP et port)
-        try (FileInputStream fis = new FileInputStream("config.conf")) {
-            prop.load(fis);
-            conAddress = prop.getProperty("SERVER_ADDRESS");
-            conPort = Integer.parseInt(prop.getProperty("SERVER_PORT").trim());
-        } catch (IOException err) {
-            System.out.println("Fichier config non trouvé.");
-        }
+        conAddress = Config.get("SERVER_ADDRESS");
+        conPort = Config.getInt("SERVER_PORT");
 
         try{
             Socket echoSocket = new Socket(InetAddress.getByName(conAddress), conPort) ; // Connection au serveur
@@ -36,6 +27,6 @@ public class Client extends Server {
     }
 
     public static void main(String[] args) {
-        new Client(4444); 
+        new Client( ); 
     }
 }

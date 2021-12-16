@@ -8,19 +8,26 @@ public class Server implements ActionListener {
     int port; 
     DataOutputStream out = null;
     DataInputStream in = null;
-    BufferedReader stdIn;
     AES aes;
     Thread listenThread;
     Interface fenetre;
     
-    public Server(int port) {
-        super();
-        this.fenetre = new Interface(this);
-        this.port = port;
+    public Server() {
         aes = new AES();
-        stdIn = new BufferedReader(new InputStreamReader(System.in));
-        connect(); // Accepter la prochaine connexion entrante
+        this.port = Config.getInt("SERVER_PORT");
+        connect();  
+        this.fenetre = new Interface(this);
+        read();
+    }    
+    public Server(int port) {
+        aes = new AES();
+        this.port = port;
+        connect();  
+        this.fenetre = new Interface(this);
+        read();
+    }    
 
+    public void read() { // Lire les messages entrant
         // Le thread va lire les messages entrants tant qu'il ne reçoit pas "bye"
         listenThread = new Thread() {
             public void run() { // Réception
@@ -52,17 +59,9 @@ public class Server implements ActionListener {
             }
         };
         listenThread.start(); // démarrage du thread pour la reception    
+    }
 
-        /*try {
-            write(); // Fonction bloquante pour l'envoi de message
-        } catch (SocketException e) {
-            System.out.println("Arrêt de la connection");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/  
-    }    
-
-    public void connect() {
+    public void connect() { // Accepter la prochaine connexion entrante
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(port); // Création du socket
@@ -83,23 +82,6 @@ public class Server implements ActionListener {
         }
         System.out.println("Client accepté");
     }
-    public void write() throws IOException {
-        String usrInput = null;
-        ////////// Envoie //////////
-        while ((usrInput = stdIn.readLine() ) != null) { // Tant que l'on a des input
-            byte[] encryptedText = aes.encryptText(usrInput);
-            out.writeInt(encryptedText.length); // On écrit la taille du message sortant
-            out.write(encryptedText); // Et le contenu du message crypté
-            if (usrInput.equals("bye")) { break; }
-        } 
-        out.close();
-        in.close();
-        listenThread.interrupt();
-    }
-
-    public static void main(String[] args) {
-        new Server(4444);
-    }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
@@ -117,6 +99,11 @@ public class Server implements ActionListener {
 
         if (usrInput.equals("bye")) {
             this.fenetre.dispose();
+            listenThread.interrupt();
         }
+    }
+
+    public static void main(String[] args) {
+        new Server();
     }
 }
