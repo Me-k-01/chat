@@ -22,12 +22,13 @@ public class Client extends WindowAdapter implements ActionListener {
 
     public Client() {
         this.fenetre = new Interface(this, this);
-        aes = new AES(); // Crypteur AES
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
         ////////// Config //////////
-        conAddress = Config.get("SERVER_ADDRESS");
-        conPort = Config.getInt("SERVER_PORT");
-        port = Config.getInt("CLIENT_PORT");
+        Config conf = new Config("client");
+        conAddress = conf.get("SERVER_ADDRESS");
+        conPort = conf.getInt("SERVER_PORT");
+        port = conf.getInt("CLIENT_PORT");
+        aes = new AES(conf.get("PASSWORD")); // Crypteur AES
         connect();
 
         /* Thread pour pouvoir écouter les nouveaux messages entrants 

@@ -3,20 +3,24 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Config {
-    static Properties prop = new Properties();
-    
-    static String FILE_NAME = "config.conf";
-    
+    Properties prop;
+    public String fileName;
 
-    public static String get(String key) {
-        try (FileInputStream fis = new FileInputStream(FILE_NAME)) {
+    public Config(String fileName) {
+        this.fileName = fileName + ".conf";
+        prop = new Properties();
+
+        try (FileInputStream fis = new FileInputStream(fileName)) {
             prop.load(fis); // On charge le fichier config
-            return prop.getProperty(key).trim(); // Récupérer la propriété
         } catch (IOException err) {
-            throw new RuntimeException("Fichier config.conf non trouvé.");
+            throw new RuntimeException("Fichier" + fileName + " non trouvé.");
         }
     }
-    public static int getInt(String key) {
-        return Integer.parseInt(Config.get(key));
+
+    public String get(String key) {
+        return prop.getProperty(key).trim(); // Récupérer la propriété
+    }
+    public int getInt(String key) {
+        return Integer.parseInt(get(key));
     }
 }

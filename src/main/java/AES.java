@@ -4,7 +4,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Random;
-
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -12,9 +11,9 @@ public class AES {
     private SecretKey AESKey;
     private Cipher cipher;
 
-    public AES() {
+    public AES(String password) {
         this.AESKey = null;
-        generateKeyFromPassword(Config.get("PASSWORD")); // Chargement automatique de la clé
+        generateKeyFromPassword(password); // Chargement automatique de la clé
 
         try {
             this.cipher = Cipher.getInstance("AES");
@@ -141,8 +140,7 @@ public class AES {
     }   
   
     public static void main(String[] args) {
-        AES aes = new AES();
-
+        //AES aes = new AES("test");
         /////// Générer une nouvelle clé ///////
         //generate();
         //saveFile(); 
@@ -150,7 +148,6 @@ public class AES {
 
         ///////  ///////
         // Un message "Test" doit
-        System.out.println(aes.decryptText(aes.encryptText("Test")));
-
+        //System.out.println(aes.decryptText(aes.encryptText("Test")));
     }
 }

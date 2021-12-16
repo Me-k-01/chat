@@ -11,7 +11,8 @@ public class Server {
     public Server() {
         connexions = new HashSet<Connexion>(); 
         ////////// Config //////////
-        port = Config.getInt("SERVER_PORT"); 
+        Config conf = new Config("server");
+        port = conf.getInt("SERVER_PORT"); 
 
         // Thread pour lire ce que les clients envoient au serveur
         readThread = new Thread() {
