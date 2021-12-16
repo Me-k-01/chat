@@ -10,10 +10,10 @@ public class Config {
         this.fileName = fileName + ".conf";
         prop = new Properties();
 
-        try (FileInputStream fis = new FileInputStream(fileName)) {
+        try (FileInputStream fis = new FileInputStream(this.fileName)) {
             prop.load(fis); // On charge le fichier config
         } catch (IOException err) {
-            throw new RuntimeException("Fichier" + fileName + " non trouvé.");
+            throw new RuntimeException("Fichier" + this.fileName + " non trouvé.");
         }
     }
 
