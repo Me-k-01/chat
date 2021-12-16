@@ -124,11 +124,10 @@ public class AES {
         return hash;
     }
 
-    public void generateKeyFromPassword(String password) {  // Générer une nouvelle clé a partir d'un mot de passe
-        // decode the base64 encoded string
+    public void generateKeyFromPassword(String password) { // Générer une nouvelle clé a partir d'un mot de passe
+        // Decode the base64 encoded string
         Random rd = new Random();
         rd.setSeed(stringToSeed(password));
-
         byte[] keyBytes = new byte[16];
         rd.nextBytes(keyBytes);
         // rebuild key using SecretKeySpec

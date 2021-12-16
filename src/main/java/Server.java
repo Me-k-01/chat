@@ -7,10 +7,8 @@ public class Server {
     Set<Connexion> connexions;
     Thread readThread;
     int port; 
-    AES aes;
 
     public Server() {
-        aes = new AES(); // Crypteur AES
         connexions = new HashSet<Connexion>(); 
         ////////// Config //////////
         port = Config.getInt("SERVER_PORT"); 

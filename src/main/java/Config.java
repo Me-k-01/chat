@@ -7,6 +7,7 @@ public class Config {
     
     static String FILE_NAME = "config.conf";
     
+
     public static String get(String key) {
         try (FileInputStream fis = new FileInputStream(FILE_NAME)) {
             prop.load(fis); // On charge le fichier config

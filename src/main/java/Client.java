@@ -17,7 +17,7 @@ public class Client extends WindowAdapter implements ActionListener {
 
     String conAddress;
     int conPort;
-    int port; 
+    int port;
     AES aes;
 
     public Client() {
@@ -26,9 +26,8 @@ public class Client extends WindowAdapter implements ActionListener {
         stdIn = new BufferedReader(new InputStreamReader(System.in)); // Entrée utilisateur
         ////////// Config //////////
         conAddress = Config.get("SERVER_ADDRESS");
-        conPort = Config.getInt("SERVER_PORT"); 
-        port = Config.getInt("CLIENT_PORT"); 
-
+        conPort = Config.getInt("SERVER_PORT");
+        port = Config.getInt("CLIENT_PORT");
         connect();
 
         /* Thread pour pouvoir écouter les nouveaux messages entrants 
@@ -46,7 +45,6 @@ public class Client extends WindowAdapter implements ActionListener {
                             String msg = aes.decryptText(received);
                             System.out.print("- Message reçu :\nChiffré : " + Arrays.toString(received));
                             System.out.println("\nDéchiffré : " + msg);
-
                             // Et on l'affiche à l'utilisateur
                             fenetre.showMessage.append("Message reçu : " + msg + "\n");
                         }
